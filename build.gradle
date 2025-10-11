@@ -1,6 +1,7 @@
 
 buildscript {
     repositories {
+
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -13,19 +14,24 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 apply plugin: 'org.openjfx.javafxplugin'
-group = 'com.root'
+group = 'moe.mcg'
 version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
-
-
 dependencies {
+
+    implementation 'org.openjfx:javafx-base:21-win'
+    implementation 'org.openjfx:javafx-graphics:21-win'
+    implementation 'org.openjfx:javafx-controls:21-win'
+    implementation 'org.openjfx:javafx-fxml:21-win'
+
     implementation 'com.google.code.gson:gson:2.13.2'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -44,4 +50,10 @@ javafx {
 
 application {
     mainClass = 'moe.mcg.mcpanel.MCPanel'
+}
+
+shadowJar {
+    archiveBaseName.set('myapp')  // jar 文件的基本名字
+    archiveVersion.set('1.0.0')  // jar 文件的版本号
+    archiveClassifier.set('')  // jar 文件的额外标签，这里设为空
 }

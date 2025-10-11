@@ -10,16 +10,10 @@ public class Component {
         this.supplier = supplier;
     }
 
-    /**
-     * 直接保存字面文本
-     */
     public static Component literal(String text) {
         return new Component(() -> text);
     }
 
-    /**
-     * 保存一个会在调用时再解析的翻译 key
-     */
     public static Component translatable(String key, Object... args) {
         return new Component(() -> {
             String raw = I18n.get(key);
@@ -29,9 +23,6 @@ public class Component {
         });
     }
 
-    /**
-     * 实际获取翻译后的文本
-     */
     public String getString() {
         return supplier.get();
     }
