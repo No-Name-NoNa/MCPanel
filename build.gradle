@@ -1,23 +1,27 @@
+import io.github.fvarrui.javapackager.gradle.PackageTask
 
 buildscript {
     repositories {
-
+        mavenCentral()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
         classpath 'org.openjfx:javafx-plugin:0.1.0'
+        classpath 'io.github.fvarrui:javapackager:1.7.6'
     }
 }
 plugins {
     id 'java'
     id 'application'
+    id "org.beryx.jlink" version "2.26.0"
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 apply plugin: 'org.openjfx.javafxplugin'
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
 group = 'moe.mcg'
 version = '1.0-SNAPSHOT'
 
@@ -26,11 +30,6 @@ repositories {
 }
 
 dependencies {
-
-    implementation 'org.openjfx:javafx-base:21-win'
-    implementation 'org.openjfx:javafx-graphics:21-win'
-    implementation 'org.openjfx:javafx-controls:21-win'
-    implementation 'org.openjfx:javafx-fxml:21-win'
 
     implementation 'com.google.code.gson:gson:2.13.2'
     testImplementation platform('org.junit:junit-bom:5.10.0')
@@ -48,12 +47,22 @@ javafx {
     modules = ['javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.fxml']
 }
 
+
+tasks.register('packageMyApp', PackageTask) {
+    dependsOn build
+    mainClass = 'moe.mcg.mcpanel.MCPanel'
+    bundleJre = true
+    customizedJre = false
+}
+
 application {
+    applicationName = 'Minecraft Server Panel'
     mainClass = 'moe.mcg.mcpanel.MCPanel'
 }
 
+/*
 shadowJar {
     archiveBaseName.set('myapp')  // jar 文件的基本名字
     archiveVersion.set('1.0.0')  // jar 文件的版本号
     archiveClassifier.set('')  // jar 文件的额外标签，这里设为空
-}
+}*/
