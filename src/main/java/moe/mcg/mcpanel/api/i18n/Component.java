@@ -1,4 +1,4 @@
-package moe.mcg.mcpanel.i18n;
+package moe.mcg.mcpanel.api.i18n;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -45,7 +45,6 @@ public class Component {
         return getString();
     }
 
-    // 可选：用于比较、缓存或日志
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

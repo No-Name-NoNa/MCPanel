@@ -1,3 +1,10 @@
 {
+  "login.error.empty_access_key": "Access key cannot be empty!",
+  "login.label.ip_port": "IP + Port:",
+  "login.label.access_key": "Access Key:",
+  "login.error.empty_ip_port": "IP + Port cannot be empty!",
+  "login.prompt.ip_port": "127.0.0.1:25565",
+  "login.button.login": "Connect to Server",
+  "login.prompt.access_key": "Your access key",
   "app.name": "Minecraft Server Panel"
 }

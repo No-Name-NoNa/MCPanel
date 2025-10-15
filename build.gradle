@@ -55,6 +55,14 @@ tasks.register('packageMyApp', PackageTask) {
     customizedJre = false
 }
 
+tasks.register('datagen', JavaExec) {
+    group = 'datagen'
+    description = 'Generate language JSON files for MCPanel'
+
+    mainClass.set('moe.mcg.mcpanel.datagen.LangGen')
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 application {
     applicationName = 'Minecraft Server Panel'
     mainClass = 'moe.mcg.mcpanel.MCPanel'

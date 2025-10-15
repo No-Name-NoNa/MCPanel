@@ -8,11 +8,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import moe.mcg.mcpanel.api.i18n.Component;
+import moe.mcg.mcpanel.api.i18n.I18n;
 import moe.mcg.mcpanel.color.ApplicationColor;
-import moe.mcg.mcpanel.i18n.Component;
-import moe.mcg.mcpanel.i18n.I18n;
-import moe.mcg.mcpanel.i18n.Language;
 import moe.mcg.mcpanel.image.ApplicationImage;
+import moe.mcg.mcpanel.ui.LoginWindow;
 
 public class Main extends Application {
 
@@ -33,9 +33,8 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-
-        I18n.load(Language.ZH_CN);
+    public void start(Stage stage) {
+        I18n.loadAll();
 
         Group group = new Group();
 
@@ -44,11 +43,13 @@ public class Main extends Application {
 
         scene.setFill(ApplicationColor.BACKGROUND);
 
-        Image icon = ApplicationImage.findImage("icon.png");
+        Image icon = ApplicationImage.INSTANCE.getResource("icon.png");
         stage.getIcons().add(icon);
         stage.setTitle(APP_NAME.getString());
         stage.initStyle(StageStyle.DECORATED);
         stage.setScene(scene);
+
+        new LoginWindow(stage);
 
         stage.show();
     }

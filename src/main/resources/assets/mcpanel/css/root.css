@@ -1,0 +1,57 @@
+.root {
+    -fx-background-color: #202225;
+}
+
+.title-bar {
+    -fx-background-color: #2f3136;
+    -fx-padding: 6px 10px;
+    -fx-alignment: center-left;
+    -fx-spacing: 8px;
+}
+
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* 按钮基础样式 */
+.title-btn-base {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-min-width: 28px;
+    -fx-min-height: 22px;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-border-color: transparent;
+    -fx-border-radius: 0; /* 无圆角 */
+    -fx-background-radius: 0; /* 无圆角 */
+}
+
+/* 最小化按钮 */
+.title-btn-min {
+    -fx-font-size: 16px;
+}
+
+.title-btn-min:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* 最大化按钮 */
+.title-btn-max {
+    -fx-font-size: 16px;
+}
+
+.title-btn-max:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* 关闭按钮 */
+.title-btn-close {
+    -fx-font-size: 16px;
+}
+
+.title-btn-close:hover {
+    -fx-background-color: #e81123;
+}

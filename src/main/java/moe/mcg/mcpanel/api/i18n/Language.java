@@ -1,4 +1,4 @@
-package moe.mcg.mcpanel.i18n;
+package moe.mcg.mcpanel.api.i18n;
 
 import lombok.Getter;
 

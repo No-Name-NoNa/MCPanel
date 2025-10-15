@@ -3,6 +3,15 @@ package moe.mcg.mcpanel.color;
 import javafx.scene.paint.Color;
 
 public class ApplicationColor {
-    public static Color BACKGROUND = new Color(30.0f / 255.0f, 31.0f / 255.0f, 34.0f / 255f, 1.0f);
-    public static Color TITLE_BACKGROUND = new Color(60.0f / 255.0f, 63.0f / 255.0f, 65.0f / 255.0f, 1.0f);
+    public static final Color BACKGROUND = rgb(235, 235, 235);
+    public static final Color TITLE_BACKGROUND = rgb(60, 63, 65);
+
+    public static Color rgb(int r, int g, int b) {
+        return Color.rgb(r, g, b);
+    }
+
+    public static Color rgba(int r, int g, int b, double alpha) {
+        return Color.rgb(r, g, b, alpha);
+    }
+
 }
