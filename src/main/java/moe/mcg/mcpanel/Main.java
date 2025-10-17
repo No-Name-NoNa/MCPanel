@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.I18n;
+import moe.mcg.mcpanel.api.i18n.Language;
 import moe.mcg.mcpanel.color.ApplicationColor;
 import moe.mcg.mcpanel.image.ApplicationImage;
 import moe.mcg.mcpanel.ui.LoginWindow;
@@ -32,9 +33,14 @@ public class Main extends Application {
         stage.setHeight(screenHeight);
     }
 
+    public static void log(String log) {
+        System.out.println("[MCPanel] " + log);
+    }
+
     @Override
     public void start(Stage stage) {
         I18n.loadAll();
+        I18n.setLanguage(Language.ZH_CN);
 
         Group group = new Group();
 

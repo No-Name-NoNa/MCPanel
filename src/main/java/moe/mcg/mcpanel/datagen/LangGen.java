@@ -35,14 +35,23 @@ public class LangGen {
 
     public static void main(String[] args) {
         addTranslation("app.name", "Minecraft Server Panel", "我的世界服务器管理面板");
-        addTranslation("login.label.ip_port", "IP + Port:", "IP + 端口：");
+        addTranslation("login.label.ip", "IP:", "IP：");
+        addTranslation("login.label.port", "Port:", "端口：");
+        addTranslation("login.prompt.ip", "127.0.0.1", "127.0.0.1");
+        addTranslation("login.prompt.port", "25565", "25565");
         addTranslation("login.label.access_key", "Access Key:", "访问密钥：");
         addTranslation("login.button.login", "Connect to Server", "连接到服务器");
-        addTranslation("login.error.empty_ip_port", "IP + Port cannot be empty!", "IP + 端口不能为空！");
         addTranslation("login.error.empty_access_key", "Access key cannot be empty!", "访问密钥不能为空！");
         addTranslation("login.prompt.ip_port", "127.0.0.1:25565", "127.0.0.1:25565");
         addTranslation("login.prompt.access_key", "Your access key", "你的访问密钥");
-
+        addTranslation("connect.error.empty_ip", "IP cannot be empty!", "IP不能为空！");
+        addTranslation("connect.error.empty_port", "Port cannot be empty!", "端口不能为空！");
+        addTranslation("connect.error.invalid_port", "Invalid port number!", "无效的端口号！");
+        addTranslation("main.connected", "Connected to Server", "已连接到服务器");
+        addTranslation("main.servername", "Server Name:", "服务器名称：");
+        addTranslation("main.motd", "MOTD:", "服务器简介：");
+        addTranslation("main.version", "Version:", "版本：");
+        addTranslation("main.players", "Players", "玩家列表");
 
         generate(new File("src/main/resources/assets/mcpanel/lang"));
     }

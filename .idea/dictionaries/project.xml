@@ -2,6 +2,7 @@
   <dictionary name="project">
     <words>
       <w>mcpanel</w>
+      <w>motd</w>
     </words>
   </dictionary>
 </component>

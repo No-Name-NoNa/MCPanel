@@ -1,10 +1,20 @@
 {
   "login.error.empty_access_key": "Access key cannot be empty!",
-  "login.label.ip_port": "IP + Port:",
-  "login.label.access_key": "Access Key:",
-  "login.error.empty_ip_port": "IP + Port cannot be empty!",
+  "main.players": "Players",
+  "connect.error.empty_ip": "IP cannot be empty!",
   "login.prompt.ip_port": "127.0.0.1:25565",
+  "connect.error.invalid_port": "Invalid port number!",
   "login.button.login": "Connect to Server",
+  "login.label.port": "Port:",
+  "connect.error.empty_port": "Port cannot be empty!",
+  "main.motd": "MOTD",
+  "main.servername": "Server Name",
+  "main.connected": "Connected to Server",
+  "login.label.access_key": "Access Key:",
   "login.prompt.access_key": "Your access key",
-  "app.name": "Minecraft Server Panel"
+  "login.prompt.ip": "127.0.0.1",
+  "app.name": "Minecraft Server Panel",
+  "login.prompt.port": "25565",
+  "main.version": "Version",
+  "login.label.ip": "IP:"
 }
