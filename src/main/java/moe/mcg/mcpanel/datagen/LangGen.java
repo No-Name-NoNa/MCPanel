@@ -52,6 +52,8 @@ public class LangGen {
         addTranslation("main.motd", "MOTD:", "服务器简介：");
         addTranslation("main.version", "Version:", "版本：");
         addTranslation("main.players", "Players", "玩家列表");
+        addTranslation("app.alert", "Exit Confirmation", "确认退出");
+        addTranslation("app.alert.content", "Are you sure you want to exit MCPanel?", "你确定要退出 MCPanel 吗？");
 
         generate(new File("src/main/resources/assets/mcpanel/lang"));
     }

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static moe.mcg.mcpanel.Main.LOGGER;
+
 public class I18n {
     private static final Gson GSON = new Gson();
     private static final String LANG_PATH = "/assets/mcpanel/lang/";
@@ -24,6 +26,7 @@ public class I18n {
     private static Map<String, String> translations = new HashMap<>();
 
     public static void loadAll() {
+        LOGGER.info("Loading all translations");
         for (Language lang : Language.values()) {
             String fileName = LANG_PATH + lang.getCode() + ".json";
             try (InputStreamReader reader = new InputStreamReader(
@@ -34,9 +37,7 @@ public class I18n {
                 }.getType();
                 Map<String, String> langMap = GSON.fromJson(reader, type);
                 allTranslations.put(lang, langMap);
-                System.out.println("[I18n] Loaded language: " + lang.getCode());
             } catch (Exception e) {
-                System.err.println("[I18n] Failed to load language file: " + fileName);
                 allTranslations.put(lang, new HashMap<>());
             }
         }
@@ -46,6 +47,7 @@ public class I18n {
     public static void setLanguage(Language language) {
         currentLanguage = language;
         translations = allTranslations.getOrDefault(language, new HashMap<>());
+        TranslateManager.translateAll();
     }
 
     public static String get(String key) {

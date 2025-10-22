@@ -10,6 +10,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import moe.mcg.mcpanel.api.config.PanelConfig;
 import moe.mcg.mcpanel.api.i18n.Component;
+import moe.mcg.mcpanel.api.i18n.ITranslatable;
+import moe.mcg.mcpanel.api.i18n.TranslateManager;
 import moe.mcg.mcpanel.api.minecraft.ServerPlayer;
 import moe.mcg.mcpanel.css.ApplicationCSS;
 
@@ -18,13 +20,14 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.List;
 
-public class MainPanelWindow {
+import static moe.mcg.mcpanel.Main.LOGGER;
+
+public class MainPanelWindow implements ITranslatable {
     private static final Component CONNECTED = Component.translatable("main.connected");
     private static final Component SERVER_NAME = Component.translatable("main.servername");
     private static final Component MOTD = Component.translatable("main.motd");
     private static final Component VERSION = Component.translatable("main.version");
     private static final Component PLAYERS = Component.translatable("main.players");
-
 
     private final Stage stage;
     private final Socket socket;
@@ -34,12 +37,20 @@ public class MainPanelWindow {
 
     private final VBox playerBox = new VBox(5);
 
+    private Label serverNameLabel;
+    private Label motdLabel;
+    private Label versionLabel;
+    private Label playerTitleLabel;
+    private PanelConfig panelConfig;
+
     public MainPanelWindow(Stage stage, PanelConfig config, Socket socket, DataInputStream in, DataOutputStream out) {
         this.stage = stage;
         this.socket = socket;
         this.in = in;
         this.out = out;
-
+        this.panelConfig = config;
+        LOGGER.info("Initializing MainPanelWindow");
+        TranslateManager.register(this);
         initUI(config);
     }
 
@@ -55,17 +66,17 @@ public class MainPanelWindow {
         card.setPadding(new Insets(20));
         card.getStyleClass().add("card");
 
-        Label serverName = new Label(SERVER_NAME.getString() + ": " + config.serverName);
-        Label motd = new Label(MOTD.getString() + ": " + config.serverIntro);
-        Label version = new Label(VERSION.getString() + ": " + config.serverVersion);
+        serverNameLabel = new Label(SERVER_NAME.getString() + config.serverName);
+        motdLabel = new Label(MOTD.getString() + config.serverIntro);
+        versionLabel = new Label(VERSION.getString() + config.serverVersion);
 
-        Label playerTitle = new Label(PLAYERS.getString());
-        playerTitle.getStyleClass().add("player-title");
+        playerTitleLabel = new Label(PLAYERS.getString());
+        playerTitleLabel.getStyleClass().add("player-title");
 
         playerBox.setAlignment(Pos.TOP_LEFT);
         playerBox.setSpacing(5);
 
-        card.getChildren().addAll(serverName, motd, version, playerTitle, playerBox);
+        card.getChildren().addAll(serverNameLabel, motdLabel, versionLabel, playerTitleLabel, playerBox);
         root.getChildren().add(card);
 
         Scene scene = new Scene(root, 600, 400);
@@ -149,6 +160,14 @@ public class MainPanelWindow {
                 playerBox.getChildren().add(playerLabel);
             }
         }
+    }
+
+    @Override
+    public void translate() {
+        serverNameLabel.setText(SERVER_NAME.getString() + panelConfig.serverName);
+        motdLabel.setText(MOTD.getString() + panelConfig.serverIntro);
+        versionLabel.setText(VERSION.getString() + panelConfig.serverVersion);
+        playerTitleLabel.setText(PLAYERS.getString());
     }
 
     /**

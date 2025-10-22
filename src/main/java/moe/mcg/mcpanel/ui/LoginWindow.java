@@ -18,6 +18,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import moe.mcg.mcpanel.api.config.PanelConfig;
 import moe.mcg.mcpanel.api.i18n.Component;
+import moe.mcg.mcpanel.api.i18n.ITranslatable;
+import moe.mcg.mcpanel.api.i18n.TranslateManager;
 import moe.mcg.mcpanel.css.ApplicationCSS;
 import moe.mcg.mcpanel.image.ApplicationImage;
 
@@ -28,8 +30,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static moe.mcg.mcpanel.Main.APP_NAME;
+import static moe.mcg.mcpanel.Main.LOGGER;
 
-public class LoginWindow {
+public class LoginWindow implements ITranslatable {
 
     private static final Component LABEL_IP = Component.translatable("login.label.ip");
     private static final Component LABEL_PORT = Component.translatable("login.label.port");
@@ -43,9 +46,19 @@ public class LoginWindow {
 
     private final Gson gson = new Gson();
     private Stage stage;
+    private Label titleLabel;
+    private Label ipLabel;
+    private Label portLabel;
+    private Label keyLabel;
+    private TextField ipField;
+    private TextField portField;
+    private PasswordField keyField;
+    private Button loginButton;
 
     public LoginWindow(Stage stage) {
         this.stage = stage;
+        LOGGER.info("Initializing LoginWindow");
+        TranslateManager.register(this);
         initUI();
     }
 
@@ -66,42 +79,42 @@ public class LoginWindow {
         logo.setFitHeight(64);
         logo.setFitWidth(64);
 
-        Label title = new Label(APP_NAME.getString());
-        title.setFont(new Font(20));
+        titleLabel = new Label(APP_NAME.getString());
+        titleLabel.setFont(new Font(20));
 
-        VBox headerBox = new VBox(10, logo, title);
+        VBox headerBox = new VBox(10, logo, titleLabel);
         headerBox.setAlignment(Pos.CENTER);
         card.add(headerBox, 0, 0, 2, 1);
 
-        //IP
-        Label ipLabel = new Label(LABEL_IP.getString());
+        // IP
+        ipLabel = new Label(LABEL_IP.getString());
         ipLabel.setFont(new Font(14));
-        TextField ipField = new TextField();
+        ipField = new TextField();
         ipField.setPromptText(PROMPT_IP.getString());
         ipField.getStyleClass().add("text-field");
         card.add(ipLabel, 0, 1);
         card.add(ipField, 1, 1);
 
-        //PORT
-        Label portLabel = new Label(LABEL_PORT.getString());
+        // PORT
+        portLabel = new Label(LABEL_PORT.getString());
         portLabel.setFont(new Font(14));
-        TextField portField = new TextField();
+        portField = new TextField();
         portField.setPromptText(PROMPT_PORT.getString());
         portField.getStyleClass().add("text-field");
         card.add(portLabel, 0, 2);
         card.add(portField, 1, 2);
 
-        //AK
-        Label keyLabel = new Label(LABEL_ACCESS_KEY.getString());
+        // ACCESS KEY
+        keyLabel = new Label(LABEL_ACCESS_KEY.getString());
         keyLabel.setFont(new Font(14));
-        PasswordField keyField = new PasswordField();
+        keyField = new PasswordField();
         keyField.setPromptText(PROMPT_ACCESS_KEY.getString());
         keyField.getStyleClass().add("password-field");
         card.add(keyLabel, 0, 3);
         card.add(keyField, 1, 3);
 
-        //LOGIN
-        Button loginButton = new Button(BUTTON_LOGIN.getString());
+        // LOGIN BUTTON
+        loginButton = new Button(BUTTON_LOGIN.getString());
         loginButton.setDefaultButton(true);
         loginButton.getStyleClass().add("button");
         loginButton.setOnAction(event -> handleConnect(ipField, portField, keyField));
@@ -218,5 +231,18 @@ public class LoginWindow {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void translate() {
+        stage.setTitle(APP_NAME.getString());
+        titleLabel.setText(APP_NAME.getString());
+        ipLabel.setText(LABEL_IP.getString());
+        ipField.setPromptText(PROMPT_IP.getString());
+        portLabel.setText(LABEL_PORT.getString());
+        portField.setPromptText(PROMPT_PORT.getString());
+        keyLabel.setText(LABEL_ACCESS_KEY.getString());
+        keyField.setPromptText(PROMPT_ACCESS_KEY.getString());
+        loginButton.setText(BUTTON_LOGIN.getString());
     }
 }

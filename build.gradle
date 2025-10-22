@@ -1,7 +1,5 @@
 import io.github.fvarrui.javapackager.gradle.PackageTask
 
-import java.awt.desktop.QuitStrategy
-
 buildscript {
     repositories {
         mavenCentral()
@@ -38,6 +36,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'ch.qos.logback:logback-classic:1.5.20'
 }
 
 test {

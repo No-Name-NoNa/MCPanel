@@ -1,0 +1,15 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                <pattern>%d{HH:mm:ss.SSS} %green([MCPanel]) -- %highlight(%msg){FATAL=red, ERROR=red, WARN=yellow,
+                    INFO=white, DEBUG=white, TRACE=white}%n
+                </pattern>
+            </pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
