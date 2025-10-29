@@ -12,16 +12,15 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 0);
     -fx-padding: 25;
     -fx-max-width: 400px;
-    -fx-min-height: 300px; /* 最小高度 */
-    -fx-max-height: 450px; /* 最大高度 */
+    -fx-min-height: 300px;
+    -fx-max-height: 450px;
 }
 
-/* 按钮 */
 .button {
     -fx-background-color: #5a9bd5;
     -fx-text-fill: white;
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
     -fx-font-size: 14px;
     -fx-padding: 8 20 8 20;
     -fx-cursor: hand;
@@ -31,10 +30,9 @@
     -fx-background-color: #4a8ac2;
 }
 
-/* 文本框和密码框 */
 .text-field, .password-field {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
     -fx-border-color: #cccccc;
     -fx-border-width: 1;
     -fx-padding: 5 10 5 10;

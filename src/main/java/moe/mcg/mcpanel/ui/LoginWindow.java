@@ -2,6 +2,7 @@ package moe.mcg.mcpanel.ui;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,10 +17,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import moe.mcg.mcpanel.api.config.PanelConfig;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
 import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.pack.ServerInfo;
 import moe.mcg.mcpanel.css.ApplicationCSS;
 import moe.mcg.mcpanel.image.ApplicationImage;
 
@@ -45,7 +46,7 @@ public class LoginWindow implements ITranslatable {
     private static final File CACHE_FILE = new File("login_cache.json");
 
     private final Gson gson = new Gson();
-    private Stage stage;
+    private final Stage stage;
     private Label titleLabel;
     private Label ipLabel;
     private Label portLabel;
@@ -179,16 +180,18 @@ public class LoginWindow implements ITranslatable {
 
                 if ("OK".equals(response)) {
                     String json = in.readUTF();
-                    PanelConfig panelConfig = new Gson().fromJson(json, PanelConfig.class);
+                    ServerInfo serverInfo = new Gson().fromJson(json, ServerInfo.class);
                     System.out.println("Received config: " + json);
 
                     saveCache(ip, portStr, accessKey);
 
                     Socket finalSocket = socket;
-                    DataInputStream finalIn = in;
-                    DataOutputStream finalOut = out;
-                    javafx.application.Platform.runLater(() -> {
-                        new MainPanelWindow(stage, panelConfig, finalSocket, finalIn, finalOut);
+                    Platform.runLater(() -> {
+                        try {
+                            new MainPanelWindow(stage, serverInfo, finalSocket, in, out);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     });
                 } else {
                     System.out.println("Authentication failed: " + response);
@@ -213,7 +216,7 @@ public class LoginWindow implements ITranslatable {
         try (FileWriter writer = new FileWriter(CACHE_FILE)) {
             gson.toJson(map, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -229,7 +232,7 @@ public class LoginWindow implements ITranslatable {
                 keyField.setText(map.getOrDefault("key", ""));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
     }
 

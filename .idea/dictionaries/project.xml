@@ -4,6 +4,7 @@
       <w>mainpanel</w>
       <w>mcpanel</w>
       <w>motd</w>
+      <w>playercount</w>
     </words>
   </dictionary>
 </component>

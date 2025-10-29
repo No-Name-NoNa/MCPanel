@@ -101,7 +101,8 @@ public class Main extends Application implements ITranslatable {
 
     @Override
     public void translate() {
-        this.alert.setTitle(ALERT.getString());
-        this.alert.setContentText(ALERT_CONTENT.getString());
+        alert.setTitle(ALERT.getString());
+        alert.setContentText(ALERT_CONTENT.getString());
+        stage.setTitle(APP_NAME.getString());
     }
 }

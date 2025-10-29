@@ -48,12 +48,29 @@ public class LangGen {
         addTranslation("connect.error.empty_port", "Port cannot be empty!", "端口不能为空！");
         addTranslation("connect.error.invalid_port", "Invalid port number!", "无效的端口号！");
         addTranslation("main.connected", "Connected to Server", "已连接到服务器");
-        addTranslation("main.servername", "Server Name:", "服务器名称：");
-        addTranslation("main.motd", "MOTD:", "服务器简介：");
-        addTranslation("main.version", "Version:", "版本：");
-        addTranslation("main.players", "Players", "玩家列表");
         addTranslation("app.alert", "Exit Confirmation", "确认退出");
         addTranslation("app.alert.content", "Are you sure you want to exit MCPanel?", "你确定要退出 MCPanel 吗？");
+
+
+        addTranslation("main.menu.server_info", "Server Info", "服务器信息");
+        addTranslation("main.menu.mod_list", "Mod List", "模组列表");
+        addTranslation("main.menu.player_list", "Players", "玩家列表");
+        addTranslation("main.menu.server_status", "Server Status", "服务器状态");
+
+        addTranslation("main.info.server_name", "Server Name", "服务器名称");
+        addTranslation("main.info.server_intro", "Description", "服务器简介");
+        addTranslation("main.info.version", "Version", "版本");
+        addTranslation("main.info.player_count", "Players", "玩家数量");
+        addTranslation("main.info.mod_list", "Installed Mods", "已安装模组");
+        addTranslation("main.info.player_list", "Online Players", "在线玩家");
+        addTranslation("main.info.server_status", "Server Status", "服务器状态");
+        addTranslation("main.info.no_mods", "No mods installed.", "没有安装任何模组。");
+        addTranslation("main.info.not_implemented", "Not yet implemented.", "功能尚未实现。");
+        addTranslation("main.info.mod_id", "Mod ID", "模组 ID");
+        addTranslation("main.info.mod_name", "Mod Name", "模组名称");
+        addTranslation("main.info.mod_version", "Mod Version", "模组版本");
+        addTranslation("main.info.mod_url", "Mod URL", "模组链接");
+
 
         generate(new File("src/main/resources/assets/mcpanel/lang"));
     }
