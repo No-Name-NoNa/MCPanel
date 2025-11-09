@@ -6,11 +6,9 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -20,8 +18,12 @@ import moe.mcg.mcpanel.api.i18n.ITranslatable;
 import moe.mcg.mcpanel.api.i18n.TranslateManager;
 import moe.mcg.mcpanel.api.pack.ModInfo;
 import moe.mcg.mcpanel.api.pack.ServerInfo;
-import moe.mcg.mcpanel.api.pack.SimpleServerPlayer;
+import moe.mcg.mcpanel.api.pack.SimpleServerPlayerList;
 import moe.mcg.mcpanel.css.ApplicationCSS;
+import moe.mcg.mcpanel.ui.panel.ModListPanel;
+import moe.mcg.mcpanel.ui.panel.PlayerListPanel;
+import moe.mcg.mcpanel.ui.panel.ServerInfoPanel;
+import moe.mcg.mcpanel.ui.panel.ServerStatusPanel;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -41,55 +43,35 @@ public class MainPanelWindow implements ITranslatable {
     private static final Component MENU_PLAYER_LIST = Component.translatable("main.menu.player_list");
     private static final Component MENU_SERVER_STATUS = Component.translatable("main.menu.server_status");
 
-    private static final Component TITLE_SERVER_NAME = Component.translatable("main.info.server_name");
-    private static final Component TITLE_SERVER_INTRO = Component.translatable("main.info.server_intro");
-    private static final Component TITLE_VERSION = Component.translatable("main.info.version");
-    private static final Component TITLE_PLAYER_COUNT = Component.translatable("main.info.player_count");
     private static final Component TITLE_MOD_LIST = Component.translatable("main.info.mod_list");
     private static final Component TITLE_PLAYER_LIST = Component.translatable("main.info.player_list");
     private static final Component TITLE_SERVER_STATUS = Component.translatable("main.info.server_status");
     private static final Component NO_MODS = Component.translatable("main.info.no_mods");
     private static final Component NOT_IMPLEMENTED = Component.translatable("main.info.not_implemented");
 
-    private static final Component MOD_ID_COLUMN_TITLE = Component.translatable("main.info.mod_id");
-    private static final Component MOD_NAME_COLUMN_TITLE = Component.translatable("main.info.mod_name");
-    private static final Component MOD_VERSION_COLUMN_TITLE = Component.translatable("main.info.mod_version");
-    private static final Component MOD_URL_COLUMN_TITLE = Component.translatable("main.info.mod_url");
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private final Stage stage;
     private final Socket socket;
     private final DataInputStream in;
     private final DataOutputStream out;
     private final Gson gson = new Gson();
-
-    private final VBox playerBox = new VBox(5);
-    private final VBox serverInfoBox = new VBox(5);
-    private SimpleServerPlayer simpleServerPlayer;
+    private final ModListPanel modListPanel = new ModListPanel();
+    private final PlayerListPanel playerListPanel = new PlayerListPanel();
+    private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
+    private final ServerStatusPanel serverStatusPanel = new ServerStatusPanel();
+    ToggleButton btnServerInfo = new ToggleButton(MENU_SERVER_INFO.getString());
+    ToggleButton btnMods = new ToggleButton(MENU_MOD_LIST.getString());
+    ToggleButton btnPlayers = new ToggleButton(MENU_PLAYER_LIST.getString());
+    ToggleButton btnStatus = new ToggleButton(MENU_SERVER_STATUS.getString());
+    ToggleGroup group = new ToggleGroup();
+    private SimpleServerPlayerList simpleServerPlayerList;
     private List<ModInfo> modInfo = new ArrayList<>();
-    private Label playerTitleLabel;
     private ServerInfo serverInfo;
-    private Button btnServerInfo;
-    private Button btnMods;
-    private Button btnPlayers;
-    private Button btnStatus;
-    private VBox rightPanel;
-    private Label serverNameLabel;
-    private Label motdLabel;
-    private Label versionLabel;
-    private Label playerCountLabel;
+    private VBox rightPanel = new VBox(5);
     private Label titleLabel;
-    private VBox modListBox;
-    private VBox playerListBox;
     private Status status = Status.INFO;
-
-    private TableView<ModInfo> tableView = new TableView<>();
-
-    private TableColumn<ModInfo, String> modIdColumn = new TableColumn<>(MOD_ID_COLUMN_TITLE.getString());
-    private TableColumn<ModInfo, String> modNameColumn = new TableColumn<>(MOD_NAME_COLUMN_TITLE.getString());
-    private TableColumn<ModInfo, String> modVersionColumn = new TableColumn<>(MOD_VERSION_COLUMN_TITLE.getString());
-    private TableColumn<ModInfo, String> modUrlColumn = new TableColumn<>(MOD_URL_COLUMN_TITLE.getString());
 
     public MainPanelWindow(Stage stage, ServerInfo config, Socket socket, DataInputStream in, DataOutputStream out) throws IOException {
         this.stage = stage;
@@ -113,35 +95,26 @@ public class MainPanelWindow implements ITranslatable {
         leftMenu.setPadding(new Insets(10, 20, 10, 10));
         leftMenu.getStyleClass().add("sidebar");
 
-        btnServerInfo = new Button(MENU_SERVER_INFO.getString());
-        btnMods = new Button(MENU_MOD_LIST.getString());
-        btnPlayers = new Button(MENU_PLAYER_LIST.getString());
-        btnStatus = new Button(MENU_SERVER_STATUS.getString());
+        btnServerInfo.setToggleGroup(group);
+        btnMods.setToggleGroup(group);
+        btnPlayers.setToggleGroup(group);
+        btnStatus.setToggleGroup(group);
 
-        for (Button b : new Button[]{btnServerInfo, btnMods, btnPlayers, btnStatus}) {
+        for (ToggleButton b : new ToggleButton[]{btnServerInfo, btnMods, btnPlayers, btnStatus}) {
             b.getStyleClass().add("sidebar-button");
         }
 
         leftMenu.getChildren().addAll(btnServerInfo, btnMods, btnPlayers, btnStatus);
 
-
         rightPanel = new VBox(10);
         rightPanel.setAlignment(Pos.TOP_LEFT);
         rightPanel.setPadding(new Insets(20));
         rightPanel.getStyleClass().add("card");
+        serverInfoPanel.setServerInfo(serverInfo);
+        rightPanel.getChildren().setAll(serverInfoPanel);
 
         titleLabel = new Label();
         titleLabel.getStyleClass().add("player-title");
-
-        serverNameLabel = new Label();
-        motdLabel = new Label();
-        versionLabel = new Label();
-        playerCountLabel = new Label();
-
-        modListBox = new VBox(5);
-        playerListBox = new VBox(5);
-
-        showServerInfo();
 
         btnServerInfo.setOnAction(e -> {
             try {
@@ -172,21 +145,15 @@ public class MainPanelWindow implements ITranslatable {
             }
         });
 
-        modIdColumn.setCellValueFactory(new PropertyValueFactory<>("modId"));
-        modNameColumn.setCellValueFactory(new PropertyValueFactory<>("modName"));
-        modVersionColumn.setCellValueFactory(new PropertyValueFactory<>("modVersion"));
-        modUrlColumn.setCellValueFactory(new PropertyValueFactory<>("modUrl"));
-        modIdColumn.getStyleClass().add("modId-column-cell");
-        modNameColumn.getStyleClass().add("modName-column-cell");
-        modVersionColumn.getStyleClass().add("modVersion-column-cell");
-        modUrlColumn.getStyleClass().add("modUrl-column-cell");
-        tableView.getColumns().addAll(modIdColumn, modNameColumn, modVersionColumn, modUrlColumn);
-
         root.setCenter(rightPanel);
         root.setLeft(leftMenu);
 
         Scene scene = new Scene(root, 800, 500);
         scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("mainpanel.css"));
+        scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("mod.css"));
+        scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("playerlist.css"));
+        scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("info.css"));
+        scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("sidebar.css"));
         stage.setScene(scene);
         stage.show();
     }
@@ -234,19 +201,19 @@ public class MainPanelWindow implements ITranslatable {
             switch (messageType) {
                 case "INFO": {
                     serverInfo = gson.fromJson(json, ServerInfo.class);
-                    Platform.runLater(this::updateServerInfo);
+                    Platform.runLater(() -> serverInfoPanel.refresh(serverInfo));
                     break;
                 }
                 case "MODS": {
                     Type listType = new TypeToken<List<ModInfo>>() {
                     }.getType();
                     modInfo = gson.fromJson(json, listType);
-                    Platform.runLater(this::updateModList);
+                    Platform.runLater(() -> modListPanel.refresh(modInfo));
                     break;
                 }
                 case "PLAYERS": {
-                    simpleServerPlayer = gson.fromJson(json, SimpleServerPlayer.class);
-                    Platform.runLater(this::updatePlayerList);
+                    simpleServerPlayerList = gson.fromJson(json, SimpleServerPlayerList.class);
+                    Platform.runLater(() -> playerListPanel.refresh(simpleServerPlayerList));
                     break;
                 }
                 default:
@@ -258,21 +225,25 @@ public class MainPanelWindow implements ITranslatable {
 
 
     private void showServerInfo() throws IOException {
-        rightPanel.getChildren().setAll(titleLabel, serverInfoBox);
-        titleLabel.setText(MENU_SERVER_INFO.getString());
+        /*   rightPanel.getChildren().setAll(serverInfoBox);*/
+        rightPanel.getChildren().setAll(serverInfoPanel);
         setStatus(Status.INFO);
     }
 
     private void showModList() throws IOException {
-        rightPanel.getChildren().setAll(titleLabel, modListBox);
-        titleLabel.setText(TITLE_MOD_LIST.getString());
+/*        rightPanel.getChildren().setAll(modListMainBox);
+        modListMainBox.getChildren().clear();
+        for (List<Label> labels: realModListLabel) {
+            modListMainBox.getChildren().addAll(labels);
+        }
+        titleLabel.setText(TITLE_MOD_LIST.getString());*/
+        rightPanel.getChildren().setAll(modListPanel);
         setStatus(Status.MODS);
     }
 
 
     private void showPlayerList() throws IOException {
-        rightPanel.getChildren().setAll(titleLabel, playerBox);
-        titleLabel.setText(TITLE_PLAYER_LIST.getString());
+        rightPanel.getChildren().setAll(playerListPanel);
         setStatus(Status.PLAYERS);
     }
 
@@ -289,32 +260,6 @@ public class MainPanelWindow implements ITranslatable {
         });
     }
 
-    private void updateServerInfo() {
-        if (serverInfo.serverName() == null) return;
-        serverNameLabel.setText(serverInfo.serverName());
-        motdLabel.setText(serverInfo.serverIntro());
-        versionLabel.setText(serverInfo.serverVersion());
-        playerCountLabel.setText(serverInfo.playerCount());
-        serverInfoBox.getChildren().setAll(serverNameLabel, motdLabel, versionLabel, playerCountLabel);
-    }
-
-    private void updatePlayerList() {
-        playerBox.getChildren().clear();
-        if (simpleServerPlayer == null) return;
-        for (String p : simpleServerPlayer.getPlayerList()) {
-            Label playerLabel = new Label(p);
-            playerLabel.getStyleClass().add("player-label");
-            playerBox.getChildren().add(playerLabel);
-        }
-    }
-
-    private void updateModList() {
-        modListBox.getChildren().clear();
-        if (modInfo != null) {
-            tableView.getItems().setAll(modInfo);
-        }
-        modListBox.getChildren().setAll(titleLabel, tableView);
-    }
 
     @Override
     public void translate() {
@@ -324,10 +269,6 @@ public class MainPanelWindow implements ITranslatable {
         btnStatus.setText(MENU_SERVER_STATUS.getString());
 
         titleLabel.setText(MENU_SERVER_INFO.getString());
-        serverNameLabel.setText(TITLE_SERVER_NAME.getString() + ": " + serverInfo.serverName());
-        motdLabel.setText(TITLE_SERVER_INTRO.getString() + ": " + serverInfo.serverIntro());
-        versionLabel.setText(TITLE_VERSION.getString() + ": " + serverInfo.serverVersion());
-        playerCountLabel.setText(TITLE_PLAYER_COUNT.getString() + ": " + serverInfo.playerCount());
     }
 
 }

@@ -5,11 +5,13 @@ import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -17,6 +19,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import moe.mcg.mcpanel.api.MinecraftSkin2D;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
 import moe.mcg.mcpanel.api.i18n.TranslateManager;
@@ -126,6 +129,26 @@ public class LoginWindow implements ITranslatable {
         hbBtn.getChildren().add(loginButton);
         card.add(hbBtn, 0, 4, 2, 1);
 
+        Group skin3DContainer = new Group();
+        skin3DContainer.setTranslateX(400); // 在右侧显示
+        skin3DContainer.setTranslateY(200); // 调整垂直位置
+
+        Image skin = ApplicationImage.INSTANCE.getResource("tenshi.png");
+
+        Image skinPixelated = new Image(
+                skin.getUrl(),
+                skin.getWidth(),
+                skin.getHeight(),
+                false,
+                false
+        );
+
+        MinecraftSkin2D skin3D = new MinecraftSkin2D(skinPixelated);
+        skin3DContainer.getChildren().add(skin3D);
+
+        root.getChildren().add(skin3DContainer);
+
+
         root.getChildren().add(card);
 
         Scene scene = new Scene(root, 600, 400);
@@ -133,6 +156,7 @@ public class LoginWindow implements ITranslatable {
 
         stage.setScene(scene);
         stage.show();
+
 
         loadCache(ipField, portField, keyField);
     }

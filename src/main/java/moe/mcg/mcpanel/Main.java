@@ -27,8 +27,9 @@ public class Main extends Application implements ITranslatable {
 
     public static final String APP_ID = "mcpanel";
     public static final Component APP_NAME = Component.translatable("app.name");
-    public static final float SCALE = 0.8f;
+    public static final float WIDTH_SCALE = 0.6f;
     public static final Logger LOGGER = LoggerFactory.getLogger("[MCPanel]");
+    private static final float HEIGHT_SCALE = 0.8f;
     private static final Component ALERT = Component.translatable("app.alert");
     private static final Component ALERT_CONTENT = Component.translatable("app.alert.content");
     private Alert alert;
@@ -42,8 +43,8 @@ public class Main extends Application implements ITranslatable {
 
     public static void setScreenSize(Stage stage) {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        double screenWidth = screenBounds.getWidth() * SCALE;
-        double screenHeight = screenBounds.getHeight() * SCALE;
+        double screenWidth = screenBounds.getWidth() * WIDTH_SCALE;
+        double screenHeight = screenBounds.getHeight() * HEIGHT_SCALE;
         stage.setWidth(screenWidth);
         stage.setHeight(screenHeight);
     }
@@ -63,7 +64,7 @@ public class Main extends Application implements ITranslatable {
         I18n.setLanguage(Language.ZH_CN);
 
         Group group = new Group();
-        scene = new Scene(group);
+        scene = new Scene(group, 1000, 800, true);
 
         setScreenSize(stage);
         scene.setFill(ApplicationColor.BACKGROUND);

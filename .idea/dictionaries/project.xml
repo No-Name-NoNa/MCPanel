@@ -5,6 +5,8 @@
       <w>mcpanel</w>
       <w>motd</w>
       <w>playercount</w>
+      <w>playerlist</w>
+      <w>tenshi</w>
     </words>
   </dictionary>
 </component>

@@ -1,0 +1,49 @@
+.mod-header {
+    -fx-background-color: linear-gradient(to bottom, #f0f4ff, #e8f0fe);
+    -fx-padding: 8 12;
+    -fx-border-color: rgba(0, 0, 0, 0.05);
+    -fx-border-width: 0 0 1 0;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.mod-header-cell {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a73e8;
+    -fx-font-size: 13px;
+}
+
+.mod-row {
+    -fx-background-color: #ffffff;
+    -fx-padding: 6 12;
+    -fx-spacing: 10;
+    -fx-border-color: rgba(0, 0, 0, 0.05);
+    -fx-border-width: 0 0 1 0;
+}
+
+.mod-row:hover {
+    -fx-background-color: rgba(230, 240, 255, 0.5);
+    -fx-cursor: hand;
+}
+
+.mod-cell {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+}
+
+.mod-cell:disabled {
+    -fx-opacity: 0.6;
+}
+
+.no-mods-label {
+    -fx-font-style: italic;
+    -fx-text-fill: #888;
+    -fx-padding: 10;
+}
+
+.mod-first-cell {
+    -fx-font-weight: bold;
+}
+
+.mod-list-box {
+    -fx-spacing: 8;
+}

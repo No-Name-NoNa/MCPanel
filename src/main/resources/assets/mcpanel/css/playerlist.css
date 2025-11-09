@@ -1,0 +1,98 @@
+/* ===============================
+   Player List Section
+   =============================== */
+.player-header {
+    -fx-background-color: #f0f4ff;  /* 与 Mod List 标题背景一致 */
+    -fx-padding: 8 12;
+    -fx-border-color: rgba(0, 0, 0, 0.05);
+    -fx-border-width: 0 0 1 0;
+    -fx-background-radius: 8 8 0 0;  /* 保持标题背景有圆角 */
+}
+
+.player-header-cell {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a73e8; /* 标题字体颜色 */
+    -fx-padding: 8px 12px;
+}
+
+/* 玩家行样式 */
+.player-row {
+    -fx-background-color: #ffffff; /* 白色背景 */
+    -fx-padding: 12px 14px; /* 增加行的内边距 */
+    -fx-border-color: rgba(0, 0, 0, 0.05); /* 行底部边框 */
+    -fx-border-width: 0 0 1 0;
+    -fx-alignment: center-left; /* 居左对齐 */
+    -fx-transition: all 0.3s ease;
+    /* 去掉圆角，保持直角矩形 */
+}
+
+.player-row:hover {
+    -fx-background-color: rgba(230, 240, 255, 0.5); /* 悬浮时背景变亮 */
+    -fx-cursor: hand;
+}
+
+/* 增加行间隔 */
+.player-list-box {
+    -fx-spacing: 8px; /* 行间距 */
+}
+
+/* 玩家信息列样式 */
+.player-name, .player-uuid, .player-ping {
+    -fx-font-size: 13px;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 8px 12px; /* 设置每列的内边距 */
+}
+
+/* Ping 色彩 */
+.ping-low {
+    -fx-text-fill: #27ae60; /* 绿色：低ping */
+}
+
+.ping-medium {
+    -fx-text-fill: #f1c40f; /* 黄色：中等ping */
+}
+
+.ping-high {
+    -fx-text-fill: #e74c3c; /* 红色：高ping */
+}
+
+/* 空玩家提示 */
+.no-player-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #888;
+    -fx-font-style: italic;
+    -fx-padding: 10;
+}
+
+/* ===============================
+   Player List Grid Styles
+   =============================== */
+.player-name-header, .player-uuid-header, .player-ping-header {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 10px 12px; /* 调整标题的内边距 */
+    -fx-alignment: center; /* 居中对齐标题 */
+}
+
+/* 玩家列宽 */
+.player-name-header {
+    -fx-min-width: 120px;
+}
+
+.player-uuid-header {
+    -fx-min-width: 180px;
+}
+
+.player-ping-header {
+    -fx-min-width: 100px;
+}
+
+/* 增加卡片风格的效果 */
+.player-row {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0.5, 0, 3); /* 阴影效果 */
+}
+
+.player-row:hover {
+    -fx-effect: dropshadow(gaussian, rgba(26, 115, 232, 0.12), 10, 0.5, 0, 3); /* 悬浮时更明显的阴影 */
+}

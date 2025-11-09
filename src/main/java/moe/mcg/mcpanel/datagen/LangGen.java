@@ -71,6 +71,10 @@ public class LangGen {
         addTranslation("main.info.mod_version", "Mod Version", "模组版本");
         addTranslation("main.info.mod_url", "Mod URL", "模组链接");
 
+        addTranslation("main.player.no_player", "No Player right now", "当前无玩家");
+        addTranslation("main.player.name", "Player Name", "玩家名称");
+        addTranslation("main.player.uuid", "Player UUID", "玩家 UUID");
+        addTranslation("main.player.ping", "Player Ping", "玩家 Ping");
 
         generate(new File("src/main/resources/assets/mcpanel/lang"));
     }
