@@ -56,6 +56,7 @@ public class LangGen {
         addTranslation("main.menu.mod_list", "Mod List", "模组列表");
         addTranslation("main.menu.player_list", "Players", "玩家列表");
         addTranslation("main.menu.server_status", "Server Status", "服务器状态");
+        addTranslation("main.menu.chat", "Server Chat", "服务器聊天栏");
 
         addTranslation("main.info.server_name", "Server Name", "服务器名称");
         addTranslation("main.info.server_intro", "Description", "服务器简介");
@@ -72,7 +73,7 @@ public class LangGen {
         addTranslation("main.info.mod_url", "Mod URL", "模组链接");
 
         addTranslation("main.player.no_player", "No Player right now", "当前无玩家");
-        addTranslation("main.player.name", "Player Name:", "玩家名称：");
+        addTranslation("main.player.username", "Player Username:", "玩家名称：");
         addTranslation("main.player.uuid", "Player UUID:", "玩家 UUID：");
         addTranslation("main.player.ping", "Player Ping:", "玩家 Ping：");
         addTranslation("main.player.location", "Player Position:", "玩家坐标：");
@@ -80,6 +81,12 @@ public class LangGen {
         addTranslation("main.player.health", "Player Health:", "玩家生命值：");
         addTranslation("main.player.food", "Player Food:", "玩家饥饿度：");
         addTranslation("main.player.return", "Return", "返回");
+        addTranslation("main.player.permission", "Permission Level:", "权限等级：");
+        addTranslation("main.player.joined", "has joined the game", "加入了游戏");
+        addTranslation("main.player.left", "has left the game", "离开了游戏");
+
+        addTranslation("main.chat.send", "Send Message", "发送消息");
+        addTranslation("main.chat.word", "Enter Message...", "输入消息...");
 
         generate(new File("src/main/resources/assets/mcpanel/lang"));
     }

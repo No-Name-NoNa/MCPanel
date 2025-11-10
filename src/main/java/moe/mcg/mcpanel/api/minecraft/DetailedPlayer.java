@@ -1,6 +1,5 @@
 package moe.mcg.mcpanel.api.minecraft;
 
-import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
 import moe.mcg.mcpanel.api.MinecraftSkin2D;
@@ -8,7 +7,7 @@ import moe.mcg.mcpanel.image.ApplicationImage;
 
 @Getter
 @Setter
-public class DetailedPlayer{
+public class DetailedPlayer {
     private String username;
     private String uuid;
     private String ping;

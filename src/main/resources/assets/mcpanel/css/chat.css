@@ -1,0 +1,63 @@
+/* ===============================
+   Chat Area Styling
+   =============================== */
+.chat-area {
+    -fx-background-color: #f0f0f0;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-padding: 10px;
+    -fx-wrap-text: true;
+}
+
+/* ===============================
+   Input Field Styling
+   =============================== */
+.input-field {
+    -fx-background-color: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-text-fill: #333;
+}
+
+.input-field:focused {
+    -fx-border-color: #3498db;
+}
+
+/* ===============================
+   Send Button Styling
+   =============================== */
+.send-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.send-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* ===============================
+   Layout Styling
+   =============================== */
+.chat-box {
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
+    -fx-alignment: top-center;
+}
+
+.input-box {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}
+
+.vbox {
+    -fx-spacing: 10px;
+}
+
+.hbox {
+    -fx-spacing: 10px;
+}

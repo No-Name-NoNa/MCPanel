@@ -19,15 +19,13 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
 
     private static final Component USERNAME = Component.translatable("main.player.username");
     private static final Component UUID = Component.translatable("main.player.uuid");
+    private static final Component PERMISSION = Component.translatable("main.player.permission");
     private static final Component PING = Component.translatable("main.player.ping");
     private static final Component LOCATION = Component.translatable("main.player.location");
     private static final Component DIMENSION = Component.translatable("main.player.dimension");
     private static final Component HEALTH = Component.translatable("main.player.health");
     private static final Component FOOD = Component.translatable("main.player.food");
     private static final Component RETURN = Component.translatable("main.player.return");
-
-    @Setter
-    private MinecraftSkin2D skin2D;
     private final Label usernameLabel;
     private final Label uuidLabel;
     private final Label pingLabel;
@@ -35,8 +33,11 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
     private final Label dimensionLabel;
     private final Label healthLabel;
     private final Label hungryLabel;
+    private final Label permissionLabel;
     private final PlayerListPanel playerListPanel;
-    private Button backButton;
+    private final Button backButton;
+    @Setter
+    private MinecraftSkin2D skin2D;
     private ServerPlayer serverPlayer;
 
     public PlayerDetailPanel(PlayerListPanel playerListPanel, DetailedPlayer data) {
@@ -52,11 +53,9 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
         dimensionLabel = new Label();
         healthLabel = new Label();
         hungryLabel = new Label();
-        backButton = new Button("Back");
-        backButton.setOnAction(event -> back());
-        // Initialize the Back Button
-        backButton = new Button("Back");
-        backButton.getStyleClass().add("back-button");  // Apply CSS class for styling
+        permissionLabel = new Label();
+        backButton = new Button(RETURN.getString());
+        backButton.getStyleClass().add("back-button");
         backButton.setOnAction(event -> back());
 
         // Create Block 1: Player's Avatar and Basic Information
@@ -89,7 +88,7 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
         }
 
         // Create Blocks for layout again after refreshing
-        VBox playerInfoBox = new VBox(10, skin2D, usernameLabel, uuidLabel, pingLabel);
+        VBox playerInfoBox = new VBox(10, skin2D, usernameLabel, uuidLabel, permissionLabel, pingLabel);
         playerInfoBox.getStyleClass().add("player-info-box");
 
         VBox statsBox = new VBox(10, healthLabel, hungryLabel, locationLabel, dimensionLabel);
@@ -104,12 +103,12 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
 
     private String formatLocation(SimpleVec3 location) {
         if (location != null) {
-            return "X: " + location.x + " Y: " + location.y + " Z: " + location.z;
+            return "(" + location.x + ", " + location.y + ", " + location.z + ")";
         }
         return "Unknown";
     }
 
-    public void back(){
+    public void back() {
         this.playerListPanel.getChildren().clear();
         this.playerListPanel.getChildren().setAll(this.playerListPanel.getPlayerContainer());
     }
@@ -117,13 +116,15 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
     @Override
     public void translate() {
         trans(serverPlayer);
+        backButton.setText(RETURN.getString());
     }
 
     private void trans(ServerPlayer serverPlayer) {
         usernameLabel.setText(USERNAME.getString() + serverPlayer.name());
         uuidLabel.setText(UUID.getString() + serverPlayer.uuid());
         pingLabel.setText(PING.getString() + serverPlayer.ping());
-        locationLabel.setText(LOCATION.getString() + serverPlayer.location());
+        permissionLabel.setText(PERMISSION.getString() + serverPlayer.permissionLevel());
+        locationLabel.setText(LOCATION.getString() + formatLocation(serverPlayer.location()));
         dimensionLabel.setText(DIMENSION.getString() + serverPlayer.dimension());
         healthLabel.setText(HEALTH.getString() + serverPlayer.health());
         hungryLabel.setText(FOOD.getString() + serverPlayer.food());

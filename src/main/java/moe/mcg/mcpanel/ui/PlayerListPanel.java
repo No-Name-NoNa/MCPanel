@@ -7,7 +7,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
 import moe.mcg.mcpanel.api.IPanel;
@@ -44,25 +44,21 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
     private static final String SESSION_API_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
 
     private final Map<String, MinecraftSkin2D> cachedMinecraftSkin2D = new HashMap<>();
-
+    private final Socket socket;
+    private final DataInputStream in;
+    private final DataOutputStream out;
     private List<SimpleServerPlayer> playerList = new ArrayList<>();
     @Getter
     @Setter
     private ServerPlayer player;
-
     @Getter
     @Setter
     private DetailedPlayer detailedPlayer = new DetailedPlayer("dev", "123", new MinecraftSkin2D(ApplicationImage.INSTANCE.getResource("tenshi.png")));
-
     @Getter
     @Setter
     private PlayerDetailPanel playerDetailPanel;
     @Getter
     private VBox playerContainer = new VBox();
-
-    private final Socket socket;
-    private final DataInputStream in;
-    private final DataOutputStream out;
 
     public PlayerListPanel(Socket socket, DataInputStream in, DataOutputStream out) {
         this.socket = socket;
@@ -281,7 +277,7 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
     private void setStatus(Status mods, String username) {
         executor.submit(() -> {
             status = mods;
-            sendMessage(status.name() +"-"+ username);
+            sendMessage(status.name() + "-" + username);
         });
     }
 
