@@ -46,3 +46,11 @@
     -fx-transition: all 0.25s ease;
 }
 
+.scroll-pane .viewport {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane:selected {
+    -fx-background-color: transparent;
+}

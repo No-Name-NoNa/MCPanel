@@ -1,12 +1,10 @@
-/* ===============================
-   Player List Section
-   =============================== */
+/* =============================== Player List Section =============================== */
 .player-header {
-    -fx-background-color: #f0f4ff;  /* 与 Mod List 标题背景一致 */
+    -fx-background-color: #f0f4ff; /* 与 Mod List 标题背景一致 */
     -fx-padding: 8 12;
-    -fx-border-color: rgba(0, 0, 0, 0.05);
-    -fx-border-width: 0 0 1 0;
-    -fx-background-radius: 8 8 0 0;  /* 保持标题背景有圆角 */
+    -fx-border-color: rgba(0, 0, 0, 0.15); /* 增加边框颜色 */
+    -fx-border-width: 0 0 2px 0; /* 增加边框宽度 */
+    -fx-background-radius: 8 8 0 0; /* 保持标题背景有圆角 */
 }
 
 .player-header-cell {
@@ -20,16 +18,20 @@
 .player-row {
     -fx-background-color: #ffffff; /* 白色背景 */
     -fx-padding: 12px 14px; /* 增加行的内边距 */
-    -fx-border-color: rgba(0, 0, 0, 0.05); /* 行底部边框 */
-    -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(0, 0, 0, 0.2); /* 增加边框颜色 */
+    -fx-border-width: 0 0 2px 0; /* 增加底部边框宽度 */
     -fx-alignment: center-left; /* 居左对齐 */
     -fx-transition: all 0.3s ease;
-    /* 去掉圆角，保持直角矩形 */
+    -fx-max-width: 100%; /* 确保每行宽度是可调整的 */
+    -fx-min-width: 250px; /* 每个行项的最小宽度 */
+    -fx-pref-width: 250px; /* 每个行项的首选宽度 */
 }
 
+/* 悬浮效果 */
 .player-row:hover {
     -fx-background-color: rgba(230, 240, 255, 0.5); /* 悬浮时背景变亮 */
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(26, 115, 232, 0.12), 10, 0.5, 0, 3); /* 悬浮时更明显的阴影 */
 }
 
 /* 增加行间隔 */
@@ -37,24 +39,13 @@
     -fx-spacing: 8px; /* 行间距 */
 }
 
-/* 玩家信息列样式 */
-.player-name, .player-uuid, .player-ping {
-    -fx-font-size: 13px;
+/* 玩家名称样式 */
+.player-name {
+    -fx-font-size: 14px;
     -fx-text-fill: #2c3e50;
     -fx-padding: 8px 12px; /* 设置每列的内边距 */
-}
-
-/* Ping 色彩 */
-.ping-low {
-    -fx-text-fill: #27ae60; /* 绿色：低ping */
-}
-
-.ping-medium {
-    -fx-text-fill: #f1c40f; /* 黄色：中等ping */
-}
-
-.ping-high {
-    -fx-text-fill: #e74c3c; /* 红色：高ping */
+    -fx-min-width: 200px; /* 每个玩家名称列的最小宽度 */
+    -fx-pref-width: 200px; /* 每个玩家名称列的首选宽度 */
 }
 
 /* 空玩家提示 */
@@ -65,27 +56,12 @@
     -fx-padding: 10;
 }
 
-/* ===============================
-   Player List Grid Styles
-   =============================== */
-.player-name-header, .player-uuid-header, .player-ping-header {
+/* =============================== Player List Grid Styles =============================== */
+.player-name-header {
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;
     -fx-padding: 10px 12px; /* 调整标题的内边距 */
     -fx-alignment: center; /* 居中对齐标题 */
-}
-
-/* 玩家列宽 */
-.player-name-header {
-    -fx-min-width: 120px;
-}
-
-.player-uuid-header {
-    -fx-min-width: 180px;
-}
-
-.player-ping-header {
-    -fx-min-width: 100px;
 }
 
 /* 增加卡片风格的效果 */
@@ -93,6 +69,73 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0.5, 0, 3); /* 阴影效果 */
 }
 
-.player-row:hover {
-    -fx-effect: dropshadow(gaussian, rgba(26, 115, 232, 0.12), 10, 0.5, 0, 3); /* 悬浮时更明显的阴影 */
+
+/* ===============================
+   Player Detail Panel
+   =============================== */
+.player-info-box {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+    -fx-alignment: center;  /* Center all content inside */
+}
+
+.stats-box {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+    -fx-alignment: center;  /* Center all content inside */
+}
+
+.button-box {
+    -fx-alignment: center;
+    -fx-padding: 10;
+}
+
+/* ===============================
+   Back Button Styling
+   =============================== */
+.back-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* ===============================
+   Layout Padding & Alignment
+   =============================== */
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #eef2f7, #e6ebf2);
+}
+
+.vbox {
+    -fx-spacing: 15px;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+.label.large {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* ===============================
+   Layout for Left & Right Boxes
+   =============================== */
+.content-box {
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+    -fx-padding: 10;
+}
+
+.hbox {
+    -fx-spacing: 20px;
 }

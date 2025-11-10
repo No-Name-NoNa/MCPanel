@@ -1,4 +1,4 @@
-package moe.mcg.mcpanel.ui.panel;
+package moe.mcg.mcpanel.ui;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,12 +7,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import moe.mcg.mcpanel.api.IPanel;
 import moe.mcg.mcpanel.api.i18n.Component;
+import moe.mcg.mcpanel.api.i18n.ITranslatable;
+import moe.mcg.mcpanel.api.i18n.TranslateManager;
 import moe.mcg.mcpanel.api.pack.ModInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModListPanel extends VBox implements IPanel<List<ModInfo>> {
+public class ModListPanel extends VBox implements IPanel<List<ModInfo>>, ITranslatable {
     private static final Component NO_MODS = Component.translatable("main.info.no_mods");
     private static final Component MOD_ID_COLUMN_TITLE = Component.translatable("main.info.mod_id");
     private static final Component MOD_NAME_COLUMN_TITLE = Component.translatable("main.info.mod_name");
@@ -25,6 +27,7 @@ public class ModListPanel extends VBox implements IPanel<List<ModInfo>> {
 
     public ModListPanel() {
         getChildren().add(modListMainBox);
+        TranslateManager.register(this);
     }
 
     @Override
@@ -65,13 +68,12 @@ public class ModListPanel extends VBox implements IPanel<List<ModInfo>> {
         for (ModInfo info : modInfo) {
             HBox row = new HBox(15);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setPadding(new Insets(6, 0, 6, 0));
             row.getStyleClass().add("mod-row");
 
-            Label idLabel = new Label(info.getModId());
-            Label nameLabel = new Label(info.getModName());
-            Label versionLabel = new Label(info.getModVersion());
-            Label urlLabel = new Label(info.getModUrl());
+            Label idLabel = new Label(info.modId());
+            Label nameLabel = new Label(info.modName());
+            Label versionLabel = new Label(info.modVersion());
+            Label urlLabel = new Label(info.modUrl());
 
             idLabel.setMinWidth(120);
             nameLabel.setMinWidth(180);
@@ -91,4 +93,8 @@ public class ModListPanel extends VBox implements IPanel<List<ModInfo>> {
     }
 
 
+    @Override
+    public void translate() {
+        refresh(modInfo);
+    }
 }

@@ -1,4 +1,4 @@
-package moe.mcg.mcpanel.ui.panel;
+package moe.mcg.mcpanel.ui;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;

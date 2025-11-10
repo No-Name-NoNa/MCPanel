@@ -1,39 +1,76 @@
-
 /* ===============================
    Sidebar
    =============================== */
 .sidebar-button {
     -fx-background-color: transparent;
-    -fx-background-radius: 10;
+    -fx-background-radius: 15;
     -fx-text-fill: #2f3640;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-font-weight: 500;
-    -fx-pref-width: 130;
-    -fx-pref-height: 40;
-    -fx-padding: 10 18;
+    -fx-pref-width: 150;
+    -fx-pref-height: 45;
+    -fx-padding: 12 20;
     -fx-cursor: hand;
     -fx-alignment: CENTER_LEFT;
     -fx-border-color: transparent;
-    -fx-border-radius: 10;
-    -fx-transition: all 0.25s ease;
+    -fx-border-radius: 15;
+    -fx-transition: all 0.3s ease-in-out;  /* Smooth transition for all changes */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.5, 0, 2); /* Subtle shadow */
 }
 
-/* 悬浮状态 → 灰色背景 */
+/* Hover state → Light grey background with text color change */
 .sidebar-button:hover {
     -fx-background-color: rgba(240, 240, 240, 0.9);
     -fx-text-fill: #1a73e8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 3); /* Slight shadow */
+    -fx-transition: all 0.3s ease-in-out;  /* Smooth transition for hover state */
 }
 
-/* 点击状态 → 蓝色背景 */
+/* Clicked state → Darker blue background and white text */
 .sidebar-button:pressed {
-    -fx-background-color: #1a73e8;
+    -fx-background-color: #4a90e2;  /* Lightened blue */
     -fx-text-fill: white;
     -fx-effect: dropshadow(gaussian, rgba(26,115,232,0.3), 8, 0.5, 0, 2);
+    -fx-transition: all 0.3s ease-in-out;  /* Smooth transition for pressed state */
 }
 
-/* 选中状态（保持蓝色） */
+/* Selected state → Keep blue with shadow */
 .sidebar-button.selected {
-    -fx-background-color: #1a73e8;
+    -fx-background-color: #63a9e7;  /* Lightened blue */
     -fx-text-fill: white;
     -fx-effect: dropshadow(gaussian, rgba(26,115,232,0.25), 6, 0.4, 0, 2);
+    -fx-transition: all 0.3s ease-in-out;  /* Smooth transition for selected state */
 }
+
+/* ===============================
+   Sidebar layout adjustments
+   =============================== */
+.sidebar {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10 0 0 10;
+    -fx-background-radius: 10 0 0 10;
+    -fx-border-color: rgba(0, 0, 0, 0.1);
+    -fx-padding: 15;
+    -fx-spacing: 10px; /* Increase space between buttons */
+    -fx-alignment: TOP_CENTER;
+}
+
+/* ===============================
+   Sidebar specific layout
+   =============================== */
+.sidebar-button {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 160;
+    -fx-pref-height: 50;
+    -fx-transition: all 0.3s ease-in-out;  /* Apply transition for all states */
+}
+
+.sidebar {
+    -fx-padding: 20px;
+    -fx-spacing: 12px;
+    -fx-alignment: top-center;
+}
+

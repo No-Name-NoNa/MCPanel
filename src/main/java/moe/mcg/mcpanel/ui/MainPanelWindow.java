@@ -7,23 +7,22 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Setter;
 import moe.mcg.mcpanel.api.Status;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
 import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.minecraft.ServerPlayer;
 import moe.mcg.mcpanel.api.pack.ModInfo;
 import moe.mcg.mcpanel.api.pack.ServerInfo;
 import moe.mcg.mcpanel.api.pack.SimpleServerPlayerList;
 import moe.mcg.mcpanel.css.ApplicationCSS;
-import moe.mcg.mcpanel.ui.panel.ModListPanel;
-import moe.mcg.mcpanel.ui.panel.PlayerListPanel;
-import moe.mcg.mcpanel.ui.panel.ServerInfoPanel;
-import moe.mcg.mcpanel.ui.panel.ServerStatusPanel;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -46,11 +45,9 @@ public class MainPanelWindow implements ITranslatable {
     private static final Component TITLE_MOD_LIST = Component.translatable("main.info.mod_list");
     private static final Component TITLE_PLAYER_LIST = Component.translatable("main.info.player_list");
     private static final Component TITLE_SERVER_STATUS = Component.translatable("main.info.server_status");
-    private static final Component NO_MODS = Component.translatable("main.info.no_mods");
     private static final Component NOT_IMPLEMENTED = Component.translatable("main.info.not_implemented");
 
-
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    public static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private final Stage stage;
     private final Socket socket;
@@ -58,7 +55,7 @@ public class MainPanelWindow implements ITranslatable {
     private final DataOutputStream out;
     private final Gson gson = new Gson();
     private final ModListPanel modListPanel = new ModListPanel();
-    private final PlayerListPanel playerListPanel = new PlayerListPanel();
+    private final PlayerListPanel playerListPanel;
     private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
     private final ServerStatusPanel serverStatusPanel = new ServerStatusPanel();
     ToggleButton btnServerInfo = new ToggleButton(MENU_SERVER_INFO.getString());
@@ -68,10 +65,11 @@ public class MainPanelWindow implements ITranslatable {
     ToggleGroup group = new ToggleGroup();
     private SimpleServerPlayerList simpleServerPlayerList;
     private List<ModInfo> modInfo = new ArrayList<>();
+    private ServerPlayer serverPlayer;
     private ServerInfo serverInfo;
     private VBox rightPanel = new VBox(5);
     private Label titleLabel;
-    private Status status = Status.INFO;
+    public static Status status = Status.INFO;
 
     public MainPanelWindow(Stage stage, ServerInfo config, Socket socket, DataInputStream in, DataOutputStream out) throws IOException {
         this.stage = stage;
@@ -79,6 +77,7 @@ public class MainPanelWindow implements ITranslatable {
         this.in = in;
         this.out = out;
         this.serverInfo = config;
+        playerListPanel = new PlayerListPanel(socket, in, out);
         LOGGER.info("Initializing MainPanelWindow");
         TranslateManager.register(this);
         initUI(config);
@@ -90,6 +89,7 @@ public class MainPanelWindow implements ITranslatable {
         root.setPadding(new Insets(20));
         root.getStyleClass().add("root");
 
+        // Left menu setup with ScrollPane
         VBox leftMenu = new VBox(15);
         leftMenu.setAlignment(Pos.TOP_LEFT);
         leftMenu.setPadding(new Insets(10, 20, 10, 10));
@@ -106,6 +106,13 @@ public class MainPanelWindow implements ITranslatable {
 
         leftMenu.getChildren().addAll(btnServerInfo, btnMods, btnPlayers, btnStatus);
 
+        // Wrap leftMenu in ScrollPane
+        ScrollPane leftScrollPane = new ScrollPane(leftMenu);
+        leftScrollPane.setFitToWidth(true);  // Ensure the content fits the width of the scroll pane
+        leftScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);  // Always show vertical scrollbar
+        leftScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);   // Hide horizontal scrollbar
+
+        // Right panel setup with ScrollPane
         rightPanel = new VBox(10);
         rightPanel.setAlignment(Pos.TOP_LEFT);
         rightPanel.setPadding(new Insets(20));
@@ -113,31 +120,44 @@ public class MainPanelWindow implements ITranslatable {
         serverInfoPanel.setServerInfo(serverInfo);
         rightPanel.getChildren().setAll(serverInfoPanel);
 
+        // Wrap rightPanel in ScrollPane
+        ScrollPane rightScrollPane = new ScrollPane(rightPanel);
+        rightScrollPane.setFitToWidth(true);  // Ensure the content fits the width of the scroll pane
+        rightScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);  // Always show vertical scrollbar
+        rightScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);   // Show horizontal scrollbar only when necessary
+
         titleLabel = new Label();
         titleLabel.getStyleClass().add("player-title");
 
         btnServerInfo.setOnAction(e -> {
+            setActiveButton(btnServerInfo);
             try {
                 showServerInfo();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
+
         btnMods.setOnAction(e -> {
+            setActiveButton(btnMods);
             try {
                 showModList();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
+
         btnPlayers.setOnAction(e -> {
+            setActiveButton(btnPlayers);
             try {
                 showPlayerList();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
+
         btnStatus.setOnAction(e -> {
+            setActiveButton(btnStatus);
             try {
                 showServerStatus();
             } catch (IOException ex) {
@@ -145,10 +165,14 @@ public class MainPanelWindow implements ITranslatable {
             }
         });
 
-        root.setCenter(rightPanel);
-        root.setLeft(leftMenu);
+        // Set the ScrollPane for rightPanel
+        root.setCenter(rightScrollPane);
+        root.setLeft(leftScrollPane);  // Set the ScrollPane for leftMenu
 
         Scene scene = new Scene(root, 800, 500);
+        leftScrollPane.getStyleClass().add("scroll-pane");
+        rightScrollPane.getStyleClass().add("scroll-pane");
+
         scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("mainpanel.css"));
         scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("mod.css"));
         scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("playerlist.css"));
@@ -216,6 +240,11 @@ public class MainPanelWindow implements ITranslatable {
                     Platform.runLater(() -> playerListPanel.refresh(simpleServerPlayerList));
                     break;
                 }
+                case "DETAILED_PLAYER": {
+                    serverPlayer = gson.fromJson(json, ServerPlayer.class);
+                    Platform.runLater(() -> playerListPanel.getPlayerDetailPanel().refresh(serverPlayer));
+                    break;
+                }
                 default:
                     System.out.println("Unknown message type: " + messageType);
             }
@@ -258,6 +287,15 @@ public class MainPanelWindow implements ITranslatable {
             status = mods;
             sendMessage(status.name());
         });
+    }
+
+    private void setActiveButton(ToggleButton selectedButton) {
+        btnServerInfo.getStyleClass().remove("selected");
+        btnMods.getStyleClass().remove("selected");
+        btnPlayers.getStyleClass().remove("selected");
+        btnStatus.getStyleClass().remove("selected");
+
+        selectedButton.getStyleClass().add("selected");
     }
 
 
