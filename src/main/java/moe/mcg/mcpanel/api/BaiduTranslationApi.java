@@ -48,15 +48,4 @@ public class BaiduTranslationApi {
             return "Error: " + responseBody;
         }
     }
-
-    public static void main(String[] args) {
-        String apiKey = "";
-        String appId = "";
-        String sourceLang = "zh";
-        String targetLang = "en";
-        String textToTranslate = "你好";
-        CompletableFuture<String> futureResponse = sendTranslationRequestAsync(apiKey, appId, sourceLang, targetLang, textToTranslate);
-        futureResponse.thenAccept(response -> System.out.println("Translated Response: " + response));
-
-    }
 }
