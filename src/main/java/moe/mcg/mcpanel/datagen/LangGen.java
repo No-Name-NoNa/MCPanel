@@ -44,6 +44,17 @@ public class LangGen {
         addTranslation("login.error.empty_access_key", "Access key cannot be empty!", "访问密钥不能为空！");
         addTranslation("login.prompt.ip_port", "127.0.0.1:25565", "127.0.0.1:25565");
         addTranslation("login.prompt.access_key", "Your access key", "你的访问密钥");
+
+        addTranslation("login.alert.connection_error", "Connection Error", "连接错误");
+        addTranslation("login.alert.validation_error", "Validation Error", "验证错误");
+        addTranslation("login.alert.connection_error.title", "Failed to Connect", "连接失败");
+        addTranslation("login.alert.connection_error.header", "Unable to establish connection.", "无法建立连接");
+        addTranslation("login.alert.validation_error.header", "Invalid Access Key", "无效的访问密钥");
+        addTranslation("login.alert.validation_error.message", "Please check your access key and try again.", "请检查您的访问密钥并重试");
+        addTranslation("login.alert.connecting", "Connecting...", "正在连接...");
+        addTranslation("login.alert.connecting.cancel", "Cancel", "取消连接");
+        addTranslation("login.alert.connecting_to_server", "Connecting to server...", "正在连接到服务器...");
+
         addTranslation("connect.error.empty_ip", "IP cannot be empty!", "IP不能为空！");
         addTranslation("connect.error.empty_port", "Port cannot be empty!", "端口不能为空！");
         addTranslation("connect.error.invalid_port", "Invalid port number!", "无效的端口号！");
@@ -51,12 +62,12 @@ public class LangGen {
         addTranslation("app.alert", "Exit Confirmation", "确认退出");
         addTranslation("app.alert.content", "Are you sure you want to exit MCPanel?", "你确定要退出 MCPanel 吗？");
 
-
         addTranslation("main.menu.server_info", "Server Info", "服务器信息");
         addTranslation("main.menu.mod_list", "Mod List", "模组列表");
         addTranslation("main.menu.player_list", "Players", "玩家列表");
         addTranslation("main.menu.server_status", "Server Status", "服务器状态");
         addTranslation("main.menu.chat", "Server Chat", "服务器聊天栏");
+        addTranslation("main.menu.option", "Option", "设置");
 
         addTranslation("main.info.server_name", "Server Name", "服务器名称");
         addTranslation("main.info.server_intro", "Description", "服务器简介");
@@ -87,6 +98,17 @@ public class LangGen {
 
         addTranslation("main.chat.send", "Send Message", "发送消息");
         addTranslation("main.chat.word", "Enter Message...", "输入消息...");
+
+        addTranslation("main.status.x", "Time (Minutes)", "时间(分钟)");
+        addTranslation("main.status.y", "tps", "tps");
+        addTranslation("main.status.average", "Average TPS:", "平均 tps：");
+        addTranslation("main.status.title", "Server Status", "服务器状态");
+
+        addTranslation("main.option.language", "Language", "语言");
+        addTranslation("main.option.apply", "Apply", "应用");
+        addTranslation("main.option.apikey", "Baidu API KEY", "百度API KEY");
+        addTranslation("main.option.appid", "Baidu APP ID", "百度APP ID");
+        addTranslation("main.option.save", "Save", "保存");
 
         generate(new File("src/main/resources/assets/mcpanel/lang"));
     }

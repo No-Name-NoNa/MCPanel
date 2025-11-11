@@ -8,9 +8,11 @@ public enum Status {
     PLAYERS,
     DETAILED_PLAYER("steve"),
     STATUS,
+    STATUS_CONTINUE,
     CHAT,
     CHAT_CONTINUE,
-    PING;
+    PING,
+    OPTION;
 
     @Getter
     private String username;

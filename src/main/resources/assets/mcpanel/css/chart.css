@@ -1,0 +1,38 @@
+/* style.css */
+
+/* =============================== */
+.line-chart {
+    -fx-background-color: transparent;
+    -fx-border-width: 1px;
+    -fx-border-color: #d1e1f0;
+    -fx-border-radius: 10px;
+    -fx-padding: 15px;
+}
+
+.axis {
+    -fx-tick-label-fill: #5a5a5a;
+    -fx-font-size: 12px;
+}
+
+.x-axis {
+    -fx-tick-mark-color: #3b80e2;
+    -fx-tick-label-fill: #3b80e2;
+}
+
+.y-axis {
+    -fx-tick-mark-color: #e74c3c;
+    -fx-tick-label-fill: #e74c3c;
+}
+
+/* =============================== */
+.chart-series-line {
+    -fx-stroke: #3b80e2; /* Blue */
+    -fx-stroke-width: 2px;
+}
+
+.chart-symbol {
+    -fx-background-color: #e74c3c; /* Red */
+    -fx-background-radius: 50%;
+    -fx-min-width: 8px;
+    -fx-min-height: 8px;
+}

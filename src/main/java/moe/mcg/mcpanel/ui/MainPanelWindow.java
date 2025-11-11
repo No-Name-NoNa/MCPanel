@@ -19,6 +19,7 @@ import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
 import moe.mcg.mcpanel.api.i18n.TranslateManager;
 import moe.mcg.mcpanel.api.minecraft.ServerPlayer;
+import moe.mcg.mcpanel.api.minecraft.ServerStatus;
 import moe.mcg.mcpanel.api.pack.ModInfo;
 import moe.mcg.mcpanel.api.pack.ServerInfo;
 import moe.mcg.mcpanel.api.pack.SimpleServerPlayerList;
@@ -43,6 +44,8 @@ public class MainPanelWindow implements ITranslatable {
     private static final Component MENU_PLAYER_LIST = Component.translatable("main.menu.player_list");
     private static final Component MENU_SERVER_STATUS = Component.translatable("main.menu.server_status");
     private static final Component MENU_CHAT = Component.translatable("main.menu.chat");
+    private static final Component MENU_OPTION = Component.translatable("main.menu.option");
+
     private static final Component TITLE_MOD_LIST = Component.translatable("main.info.mod_list");
     private static final Component TITLE_PLAYER_LIST = Component.translatable("main.info.player_list");
     private static final Component TITLE_SERVER_STATUS = Component.translatable("main.info.server_status");
@@ -57,12 +60,14 @@ public class MainPanelWindow implements ITranslatable {
     private final PlayerListPanel playerListPanel;
     private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
     private final ServerStatusPanel serverStatusPanel = new ServerStatusPanel();
+    private final OptionPanel optionPanel = new OptionPanel();
     private final ServerChatPanel serverChatPanel;
     ToggleButton btnServerInfo = new ToggleButton(MENU_SERVER_INFO.getString());
     ToggleButton btnMods = new ToggleButton(MENU_MOD_LIST.getString());
     ToggleButton btnPlayers = new ToggleButton(MENU_PLAYER_LIST.getString());
     ToggleButton btnStatus = new ToggleButton(MENU_SERVER_STATUS.getString());
     ToggleButton btnChat = new ToggleButton(MENU_CHAT.getString());
+    ToggleButton btnOpt = new ToggleButton(MENU_OPTION.getString());
     ToggleGroup group = new ToggleGroup();
     private SimpleServerPlayerList simpleServerPlayerList;
     private List<ModInfo> modInfo = new ArrayList<>();
@@ -70,6 +75,8 @@ public class MainPanelWindow implements ITranslatable {
     private ServerInfo serverInfo;
     private VBox rightPanel = new VBox(5);
     private Label titleLabel;
+    private boolean chatted = false;
+    private boolean statuses = false;
 
     public MainPanelWindow(Stage stage, ServerInfo config, Socket socket, DataInputStream in, DataOutputStream out) throws IOException {
         this.stage = stage;
@@ -84,13 +91,12 @@ public class MainPanelWindow implements ITranslatable {
         initUI(config);
     }
 
-    private void initUI(ServerInfo serverInfo) throws IOException {
+    private void initUI(ServerInfo serverInfo) {
         startListenThread();
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(20));
         root.getStyleClass().add("root");
 
-        // Left menu setup with ScrollPane
         VBox leftMenu = new VBox(15);
         leftMenu.setAlignment(Pos.TOP_LEFT);
         leftMenu.setPadding(new Insets(10, 20, 10, 10));
@@ -101,19 +107,17 @@ public class MainPanelWindow implements ITranslatable {
         btnPlayers.setToggleGroup(group);
         btnStatus.setToggleGroup(group);
 
-        for (ToggleButton b : new ToggleButton[]{btnServerInfo, btnMods, btnPlayers, btnStatus, btnChat}) {
+        for (ToggleButton b : new ToggleButton[]{btnServerInfo, btnMods, btnPlayers, btnStatus, btnChat, btnOpt}) {
             b.getStyleClass().add("sidebar-button");
         }
 
-        leftMenu.getChildren().addAll(btnServerInfo, btnMods, btnPlayers, btnStatus, btnChat);
+        leftMenu.getChildren().addAll(btnServerInfo, btnMods, btnPlayers, btnStatus, btnChat, btnOpt);
 
-        // Wrap leftMenu in ScrollPane
         ScrollPane leftScrollPane = new ScrollPane(leftMenu);
-        leftScrollPane.setFitToWidth(true);  // Ensure the content fits the width of the scroll pane
-        leftScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);  // Always show vertical scrollbar
-        leftScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);   // Hide horizontal scrollbar
+        leftScrollPane.setFitToWidth(true);
+        leftScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        leftScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        // Right panel setup with ScrollPane
         rightPanel = new VBox(10);
         rightPanel.setAlignment(Pos.TOP_LEFT);
         rightPanel.setPadding(new Insets(20));
@@ -122,15 +126,16 @@ public class MainPanelWindow implements ITranslatable {
         rightPanel.getChildren().setAll(serverInfoPanel);
         leftScrollPane.setFitToHeight(true);
 
-        // Wrap rightPanel in ScrollPane
         ScrollPane rightScrollPane = new ScrollPane(rightPanel);
-        rightScrollPane.setFitToWidth(true);  // Ensure the content fits the width of the scroll pane
-        rightScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);  // Always show vertical scrollbar
-        rightScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);   // Show horizontal scrollbar only when necessary
+        rightScrollPane.setFitToWidth(true);
+        rightScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        rightScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         rightScrollPane.setFitToHeight(true);
         VBox.setVgrow(serverInfoPanel, Priority.ALWAYS);
-        VBox.setVgrow(serverStatusPanel, Priority.ALWAYS);
         VBox.setVgrow(serverChatPanel, Priority.ALWAYS);
+        VBox.setVgrow(serverStatusPanel, Priority.ALWAYS);
+        VBox.setVgrow(optionPanel, Priority.ALWAYS);
+        optionPanel.getStyleClass().add("option-panel");
 
         titleLabel = new Label();
         titleLabel.getStyleClass().add("player-title");
@@ -176,9 +181,13 @@ public class MainPanelWindow implements ITranslatable {
             showChat();
         });
 
-        // Set the ScrollPane for rightPanel
+        btnOpt.setOnAction(e -> {
+            setActiveButton(btnOpt);
+            showOption();
+        });
+
         root.setCenter(rightScrollPane);
-        root.setLeft(leftScrollPane);  // Set the ScrollPane for leftMenu
+        root.setLeft(leftScrollPane);
 
         Scene scene = new Scene(root, 800, 500);
         leftScrollPane.getStyleClass().add("scroll-pane");
@@ -190,6 +199,8 @@ public class MainPanelWindow implements ITranslatable {
         scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("info.css"));
         scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("sidebar.css"));
         scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("chat.css"));
+        scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("chart.css"));
+        scene.getStylesheets().add(ApplicationCSS.INSTANCE.getResource("option.css"));
         stage.setScene(scene);
         stage.show();
     }
@@ -199,12 +210,10 @@ public class MainPanelWindow implements ITranslatable {
         Thread listener = new Thread(() -> {
             try {
                 while (!socket.isClosed()) {
-                    System.out.println("received");
                     handleServerMessage();
                 }
-                System.out.println("closed");
             } catch (Exception e) {
-                System.out.println("Disconnected: " + e.getMessage());
+                LOGGER.error("Disconnected: {}", e.getMessage());
                 try {
                     socket.close();
                 } catch (Exception ignored) {
@@ -259,16 +268,39 @@ public class MainPanelWindow implements ITranslatable {
                 }
 
                 case "CHAT": {
-                    List<String> chatList = gson.fromJson(json, List.class);
+                    Type listType = new TypeToken<List<String>>() {
+                    }.getType();
+                    List<String> chatList = gson.fromJson(json, listType);
                     Platform.runLater(() -> {
-                        serverChatPanel.getChatArea().clear();
-                        serverChatPanel.fill(chatList);
+                        serverChatPanel.getChatArea().getChildren().clear();
+                        serverChatPanel.refresh(chatList);
                     });
                     break;
                 }
                 case "CHAT_CONTINUE": {
-                    List<String> chatList = gson.fromJson(json, List.class);
-                    Platform.runLater(() -> serverChatPanel.fill(chatList));
+                    Type listType = new TypeToken<List<String>>() {
+                    }.getType();
+                    List<String> chatList = gson.fromJson(json, listType);
+                    Platform.runLater(() -> serverChatPanel.refresh(chatList));
+                    break;
+                }
+
+                case "STATUS": {
+                    Type listType = new TypeToken<List<ServerStatus>>() {
+                    }.getType();
+                    List<ServerStatus> statusList = gson.fromJson(json, listType);
+                    Platform.runLater(() -> {
+                        serverStatusPanel.getTickQueue().clear();
+                        serverStatusPanel.refresh(statusList);
+                    });
+                    break;
+                }
+
+                case "STATUS_CONTINUE": {
+                    Type listType = new TypeToken<List<ServerStatus>>() {
+                    }.getType();
+                    List<ServerStatus> statusList = gson.fromJson(json, listType);
+                    Platform.runLater(() -> serverStatusPanel.refresh(statusList));
                     break;
                 }
 
@@ -304,14 +336,30 @@ public class MainPanelWindow implements ITranslatable {
     }
 
     private void showServerStatus() throws IOException {
-        rightPanel.getChildren().setAll(titleLabel, new Label(NOT_IMPLEMENTED.getString()));
-        titleLabel.setText(TITLE_SERVER_STATUS.getString());
-        setStatus(Status.STATUS);
+        rightPanel.getChildren().setAll(serverStatusPanel);
+
+        if (!statuses) {
+            setStatus(Status.STATUS);
+            statuses = true;
+        } else {
+            setStatus(Status.STATUS_CONTINUE);
+        }
+
     }
 
     private void showChat() {
         rightPanel.getChildren().setAll(serverChatPanel);
-        setStatus(Status.CHAT);
+        if (!chatted) {
+            setStatus(Status.CHAT);
+            chatted = true;
+        } else {
+            setStatus(Status.CHAT_CONTINUE);
+        }
+    }
+
+    private void showOption() {
+        rightPanel.getChildren().setAll(optionPanel);
+        setStatus(Status.OPTION);
     }
 
     private void setStatus(Status mods) {
@@ -327,6 +375,7 @@ public class MainPanelWindow implements ITranslatable {
         btnPlayers.getStyleClass().remove("selected");
         btnStatus.getStyleClass().remove("selected");
         btnChat.getStyleClass().remove("selected");
+        btnOpt.getStyleClass().remove("selected");
         selectedButton.getStyleClass().add("selected");
     }
 
@@ -337,7 +386,8 @@ public class MainPanelWindow implements ITranslatable {
         btnMods.setText(MENU_MOD_LIST.getString());
         btnPlayers.setText(MENU_PLAYER_LIST.getString());
         btnStatus.setText(MENU_SERVER_STATUS.getString());
-
+        btnChat.setText(MENU_CHAT.getString());
+        btnOpt.setText(MENU_OPTION.getString());
         titleLabel.setText(MENU_SERVER_INFO.getString());
     }
 

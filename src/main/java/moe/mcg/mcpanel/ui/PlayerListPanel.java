@@ -264,8 +264,7 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
             UserImage skinUserImage = loadImageTask.getValue();
             playerDetailPanel.setSkin2D(new MinecraftSkin2D(skinUserImage.image()));
             cachedMinecraftSkin2D.put(username, new MinecraftSkin2D(skinUserImage.image()));
-
-            getChildren().set(0, playerDetailPanel);
+            getChildren().setAll(playerDetailPanel);
         });
         loadImageTask.setOnFailed(event -> {
             Throwable ex = loadImageTask.getException();

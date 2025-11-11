@@ -12,13 +12,5 @@ public enum Language {
     Language(String code) {
         this.code = code;
     }
-
-    public static Language fromCode(String code) {
-        for (Language lang : values()) {
-            if (lang.code.equalsIgnoreCase(code)) {
-                return lang;
-            }
-        }
-        return EN_US;
-    }
 }
+

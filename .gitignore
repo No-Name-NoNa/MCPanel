@@ -42,3 +42,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 /META-INF/
+
+apikey.json
+language.json
+login_cache.json

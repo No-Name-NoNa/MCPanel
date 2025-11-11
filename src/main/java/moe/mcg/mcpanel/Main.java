@@ -1,5 +1,6 @@
 package moe.mcg.mcpanel;
 
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
@@ -11,20 +12,22 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import moe.mcg.mcpanel.api.i18n.Component;
-import moe.mcg.mcpanel.api.i18n.I18n;
-import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.Language;
+import moe.mcg.mcpanel.api.i18n.*;
 import moe.mcg.mcpanel.color.ApplicationColor;
 import moe.mcg.mcpanel.image.ApplicationImage;
 import moe.mcg.mcpanel.ui.LoginWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Optional;
 
 public class Main extends Application implements ITranslatable {
 
+    private final Gson gson = new Gson();
     public static final String APP_ID = "mcpanel";
     public static final Component APP_NAME = Component.translatable("app.name");
     public static final float WIDTH_SCALE = 0.6f;
@@ -32,6 +35,7 @@ public class Main extends Application implements ITranslatable {
     private static final float HEIGHT_SCALE = 0.8f;
     private static final Component ALERT = Component.translatable("app.alert");
     private static final Component ALERT_CONTENT = Component.translatable("app.alert.content");
+    private static final String LANGUAGE_FILE_PATH = "language.json";
     private Alert alert;
     private Scene scene;
     private Stage stage;
@@ -58,10 +62,7 @@ public class Main extends Application implements ITranslatable {
         LOGGER.info("Starting MCPanel");
 
         I18n.loadAll();
-
-        LOGGER.info("Default Language ZH_CN");
-
-        I18n.setLanguage(Language.ZH_CN);
+        I18n.setLanguage(checkAndCreateLanguageFile());
 
         Group group = new Group();
         scene = new Scene(group, 1000, 800, true);
@@ -98,6 +99,45 @@ public class Main extends Application implements ITranslatable {
             System.exit(0);
         }
     }
+
+    private Language checkAndCreateLanguageFile() {
+        File languageFile = new File(LANGUAGE_FILE_PATH);
+        if (!languageFile.exists()) {
+            try (FileWriter writer = new FileWriter(languageFile)) {
+                writer.write(gson.toJson(new LanguageConfig("ZH_CN")));
+                LOGGER.info("language.json file not found, created with default language (zh_cn)");
+                return Language.ZH_CN;
+            } catch (IOException e) {
+                LOGGER.error("Failed to create language.json", e);
+            }
+        } else {
+            try (FileReader reader = new FileReader(languageFile)) {
+                LanguageConfig config = gson.fromJson(reader, LanguageConfig.class);
+                if (config != null && !config.language().isEmpty()) {
+                    return Language.valueOf(config.language());
+                }
+            } catch (IOException e) {
+                LOGGER.error("Failed to read language.json", e);
+            } catch (IllegalArgumentException e) {
+                LOGGER.warn("Invalid language code in language.json, defaulting to zh_cn");
+            }
+        }
+
+        return Language.ZH_CN;
+    }
+
+    public static void updateLanguageInFile(Language language) {
+        File languageFile = new File(LANGUAGE_FILE_PATH);
+        try (FileWriter writer = new FileWriter(languageFile)) {
+            String json = new Gson().toJson(new LanguageConfig(language.name()));
+            writer.write(json);
+            LOGGER.info("Updated language.json with language: {}", language);
+
+        } catch (IOException e) {
+            LOGGER.error("Failed to update language.json", e);
+        }
+    }
+
 
 
     @Override

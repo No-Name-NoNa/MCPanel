@@ -1,0 +1,141 @@
+/* Style for the entire OptionPanel container */
+.option-panel {
+    -fx-background-color: #f4f4f9;
+    -fx-padding: 20px;
+    -fx-spacing: 10px; /* Reduced spacing to make it more compact */
+}
+
+/* Style for the language selection HBox */
+.language-box {
+    -fx-alignment: center-left;  /* Align the language selection to the left */
+    -fx-spacing: 15px;           /* Space between label and combo box */
+}
+
+/* Style for the language label */
+.language-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-pref-width: 100px; /* Control label width */
+}
+
+/* Style for the ComboBox (language selection) */
+.language-combo-box {
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+}
+
+/* Style for the Apply button */
+.apply-button {
+    -fx-font-size: 14px;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-border-radius: 5px;
+    -fx-alignment: center;
+}
+
+/* Hover effect for the Apply button */
+.apply-button:hover {
+    -fx-background-color: #45a049;
+}
+
+/* Style for the ComboBox selected item (highlighted when selected) */
+.language-combo-box .combo-box-popup {
+    -fx-background-color: #f9f9f9;
+    -fx-border-radius: 5px;
+    -fx-border-color: #ccc;
+}
+
+.language-combo-box .combo-box-list-cell {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-background-color: transparent;
+}
+
+.language-combo-box .combo-box-list-cell:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Layout for button and combo-box side-by-side */
+.language-box {
+    -fx-alignment: center-left;  /* Align left */
+    -fx-spacing: 10px;
+}
+
+.apply-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.apply-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* For the entire OptionPanel layout */
+.option-panel {
+    -fx-background-color: #f4f4f9;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+}
+
+
+/* Style for the API Key and App ID input fields */
+.api-settings-box {
+    -fx-alignment: center-left; /* Align to the left */
+    -fx-spacing: 15px;           /* Space between the label and input field */
+}
+
+/* Style for the API Key label */
+.api-key-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-pref-width: 100px; /* Control label width */
+}
+
+/* Style for the App ID label */
+.app-id-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-pref-width: 100px; /* Control label width */
+}
+
+/* Style for the TextField (API Key and App ID input fields) */
+.api-key-field, .app-id-field {
+    -fx-pref-width: 300px;
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+}
+
+/* Style for the Save button */
+.save-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+/* Hover effect for the Save button */
+.save-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* For the entire API settings box layout */
+.api-settings-box {
+    -fx-alignment: center-left; /* Align to the left */
+    -fx-spacing: 10px;
+}

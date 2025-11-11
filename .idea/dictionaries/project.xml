@@ -2,6 +2,7 @@
   <dictionary name="project">
     <words>
       <w>gamemode</w>
+      <w>httpcomponents</w>
       <w>mainpanel</w>
       <w>mcpanel</w>
       <w>mojang</w>
