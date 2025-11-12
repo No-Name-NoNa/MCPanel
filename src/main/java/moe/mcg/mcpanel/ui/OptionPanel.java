@@ -48,7 +48,7 @@ public class OptionPanel extends VBox implements ITranslatable {
     private final Label enabledLabel;
 
     public OptionPanel() {
-        TranslateManager.register(this);
+        TranslationManager.register(this);
 
         setSpacing(10);
 

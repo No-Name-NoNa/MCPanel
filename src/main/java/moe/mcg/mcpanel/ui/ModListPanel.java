@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import moe.mcg.mcpanel.api.IPanel;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.i18n.TranslationManager;
 import moe.mcg.mcpanel.api.pack.ModInfo;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class ModListPanel extends VBox implements IPanel<List<ModInfo>>, ITransl
 
     public ModListPanel() {
         getChildren().add(modListMainBox);
-        TranslateManager.register(this);
+        TranslationManager.register(this);
     }
 
     @Override

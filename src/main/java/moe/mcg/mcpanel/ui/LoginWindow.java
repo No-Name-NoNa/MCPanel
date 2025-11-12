@@ -17,7 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.i18n.TranslationManager;
 import moe.mcg.mcpanel.api.pack.ServerInfo;
 import moe.mcg.mcpanel.css.ApplicationCSS;
 import moe.mcg.mcpanel.image.ApplicationImage;
@@ -67,7 +67,7 @@ public class LoginWindow implements ITranslatable {
     public LoginWindow(Stage stage) {
         this.stage = stage;
         LOGGER.info("Initializing LoginWindow");
-        TranslateManager.register(this);
+        TranslationManager.register(this);
         initUI();
     }
 
@@ -95,7 +95,6 @@ public class LoginWindow implements ITranslatable {
         headerBox.setAlignment(Pos.CENTER);
         card.add(headerBox, 0, 0, 2, 1);
 
-        // IP
         ipLabel = new Label(LABEL_IP.getString());
         ipLabel.setFont(new Font(14));
         ipField = new TextField();
@@ -104,7 +103,6 @@ public class LoginWindow implements ITranslatable {
         card.add(ipLabel, 0, 1);
         card.add(ipField, 1, 1);
 
-        // PORT
         portLabel = new Label(LABEL_PORT.getString());
         portLabel.setFont(new Font(14));
         portField = new TextField();
@@ -113,7 +111,6 @@ public class LoginWindow implements ITranslatable {
         card.add(portLabel, 0, 2);
         card.add(portField, 1, 2);
 
-        // ACCESS KEY
         keyLabel = new Label(LABEL_ACCESS_KEY.getString());
         keyLabel.setFont(new Font(14));
         keyField = new PasswordField();
@@ -122,7 +119,6 @@ public class LoginWindow implements ITranslatable {
         card.add(keyLabel, 0, 3);
         card.add(keyField, 1, 3);
 
-        // LOGIN BUTTON
         loginButton = new Button(BUTTON_LOGIN.getString());
         loginButton.setDefaultButton(true);
         loginButton.getStyleClass().add("button");
@@ -143,7 +139,6 @@ public class LoginWindow implements ITranslatable {
 
         stage.setScene(scene);
         stage.show();
-
 
         loadCache(ipField, portField, keyField);
     }
@@ -186,27 +181,27 @@ public class LoginWindow implements ITranslatable {
                 in = new DataInputStream(socket.getInputStream());
 
                 out.writeUTF(accessKey);
-                out.flush();
+                out.flush(); //发送
 
-                String response = in.readUTF();
+                String response = in.readUTF(); //等待响应
 
-                if ("OK".equals(response)) {
+                if ("OK".equals(response)) {// key 验证通过
                     String json = in.readUTF();
                     ServerInfo serverInfo = new Gson().fromJson(json, ServerInfo.class);
                     LOGGER.info("Connected to server");
 
-                    saveCache(ip, portStr, accessKey);
+                    saveCache(ip, portStr, accessKey); //保存Ip,Port和Key
 
                     Socket finalSocket = socket;
                     Platform.runLater(() -> {
                         try {
                             progressDialog.close();
-                            new MainPanelWindow(stage, serverInfo, finalSocket, in, out);
+                            new MainPanelWindow(stage, serverInfo, finalSocket, in, out); //打开主面板
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     });
-                } else {
+                } else { //验证不通过
                     LOGGER.warn("failed to connect");
                     progressDialog.close();
                     showValidationErrorPopup();
@@ -284,6 +279,11 @@ public class LoginWindow implements ITranslatable {
         loginButton.setText(BUTTON_LOGIN.getString());
     }
 
+    /**
+     * ProgressDialog 类表示一个进度对话框，用于显示连接过程中的进度信息。
+     * 该对话框包含一条消息标签、一个进度条以及一个取消按钮。用户可以通过点击取消按钮来终止连接操作。
+     * 对话框的模态性设置为应用级别模态，意味着在关闭此对话框前，用户不能与应用程序的其他部分进行交互。
+     */
     private class ProgressDialog extends Stage {
 
         public ProgressDialog() {

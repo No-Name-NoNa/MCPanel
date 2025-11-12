@@ -9,6 +9,25 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * 语言文件生成器。
+ * <p>
+ * 该类用于管理并生成 Minecraft 服务器面板的语言文件。支持添加不同语言（如英语、中文）的翻译，并将翻译数据
+ * 生成到指定目录下的 JSON 文件中。生成的 JSON 文件符合标准的语言文件格式，可以用于界面文本的国际化处理。
+ * </p>
+ * <p>
+ * 主要功能包括：
+ * <ul>
+ *     <li>通过 {@link #addTranslation(String, String, String)} 方法添加不同语言的翻译。</li>
+ *     <li>通过 {@link #generate(File)} 方法生成包含所有翻译内容的 JSON 文件。</li>
+ * </ul>
+ * </p>
+ * <p>
+ * 默认生成的语言包括英语（"en_us"）和简体中文（"zh_cn"），可以通过 {@link #addTranslation(String, String, String)}
+ * 方法动态添加更多翻译项。
+ * </p>
+ */
 public class LangGen {
 
     private static final Map<String, Map<String, String>> LANGUAGE = new HashMap<>();

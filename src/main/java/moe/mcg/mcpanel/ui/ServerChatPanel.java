@@ -1,5 +1,6 @@
 package moe.mcg.mcpanel.ui;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -30,9 +31,12 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
 
     private static final Component SEND = Component.translatable("main.chat.send");
     private static final Component WORD = Component.translatable("main.chat.word");
+
+    //记录翻译后的文本, 方便还原
     private static final Map<Integer, String> translatedTexts = new ConcurrentHashMap<>();
     public static boolean clearCache = false;
     private final ScrollPane chatScrollPane;
+    private final VBox messageWrapper = new VBox(0);
     @Getter
     private final TextFlow chatArea;
     private final TextField inputField;
@@ -45,12 +49,12 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
         this.socket = socket;
         this.in = in;
         this.out = out;
-        TranslateManager.register(this);
+        TranslationManager.register(this);
 
         chatArea = new TextFlow();
         chatScrollPane = new ScrollPane(chatArea);
         chatScrollPane.setFitToWidth(true);
-        chatScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        chatScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         inputField = new TextField();
         sendButton = new Button(SEND.getString());
@@ -67,8 +71,9 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
                 send();
             }
         });
-
+/*
         setSpacing(10);
+        */
         setPadding(new Insets(10));
 
         HBox inputBox = new HBox(10, inputField, sendButton);
@@ -93,13 +98,13 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
     @Override
     public void refresh(List<String> data) {
         if (clearCache) {
-            for (int i = 0; i < chatArea.getChildren().size(); i++) {
+            //清除翻译
+            for (int i = 0; i < messageWrapper.getChildren().size(); i++) {
                 if (translatedTexts.containsKey(i)) {
-                    Text t = (Text) chatArea.getChildren().get(i);
-                    String text = replaceLast(t.getText(), translatedTexts.get(i), "");
-                    Text text1 = new Text(text);
-                    text1.setFill(Color.BLACK);
-                    chatArea.getChildren().set(i, text1);
+                    HBox box = (HBox) messageWrapper.getChildren().get(i);
+                    if (box.getChildren().size()>=2) {
+                        box.getChildren().remove(1);
+                    }
                 }
             }
             clearCache = false;
@@ -108,6 +113,9 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
         fill(data);
     }
 
+    /**
+     * 发送指令或消息
+     */
     private void send() {
         String message = inputField.getText();
         if (message.isEmpty()) return;
@@ -126,37 +134,48 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
     }
 
     public void fill(List<String> text) {
+
         for (String s : text) {
-            if (s.contains("main.player")) {
+            HBox messageBox = new HBox(20);
+            if (s.contains("main.player")) { //处理加入或退出的玩家消息
                 String[] split = s.split(": ");
                 String name = split[0];
                 String key = split[1];
                 Text playerKeyText = new Text(name + " " + Component.translatable(key).getString() + "\n");
                 playerKeyText.setFill(Color.ORANGE);
-                chatArea.getChildren().addAll(playerKeyText);
+                messageBox.getChildren().add(playerKeyText);
             } else {
                 Text normalText = new Text(s + "\n");
                 normalText.setFill(Color.BLACK);
-                chatArea.getChildren().add(normalText);
+                messageBox.getChildren().add(normalText);
             }
+            messageWrapper.getChildren().add(messageBox);
+        }
+        chatArea.getChildren().setAll(messageWrapper);
 
-            chatScrollPane.setVvalue(1.0);
+
+        if (!OptionPanel.isENABLED()) { //是否启用翻译
+            return;
         }
 
-        if (!OptionPanel.isENABLED()) return;
-
-        for (int i = chatArea.getChildren().size() - 1; i >= 0; i--) {
+        for (int i = messageWrapper.getChildren().size() - 1; i >= 0; i--) { //从底部开始进行翻译
             if (translatedTexts.containsKey(i)) continue;
-            String originalText = getTextFromLine(i);
+            HBox messageBox = (HBox) messageWrapper.getChildren().get(i);
+            Text originalTextNode = (Text) messageBox.getChildren().getFirst();
+            String originalText = originalTextNode.getText();
+
             if (originalText != null && originalText.startsWith("/")) {
                 translatedTexts.put(i, "");
                 continue;
             }
             if (originalText != null && OptionPanel.getKEY() != null && OptionPanel.getID() != null) {
-                translatedTexts.put(i, "");
+                translatedTexts.put(i, ""); //提前占位,防止多次翻译
                 translateTextAndAddToChat(i, I18n.getCurrentLanguage().equals(Language.ZH_CN) ? "zh" : "en");
                 break;
             }
+        }
+        if (!text.isEmpty()) {
+            chatScrollPane.setVvalue(1.0);
         }
     }
 
@@ -172,23 +191,27 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
     }
 
     public void translateLanguage(int lineIndex, String text) {
-        if (lineIndex < 0 || lineIndex >= chatArea.getChildren().size()) {
+        if (lineIndex < 0 || lineIndex >= messageWrapper.getChildren().size()) {
             LOGGER.warn("Invalid line index: {}", lineIndex);
             translatedTexts.remove(lineIndex);
             return;
         }
-        String temp = getTextFromLine(lineIndex).replace("\n", "");
+        HBox messageBox = (HBox) messageWrapper.getChildren().get(lineIndex);
+        Text existingText = (Text) messageBox.getChildren().getFirst();
 
-        if (isContentEqual(temp, text)) {
+        String temp = existingText.getText().replace("\n", "");
+
+        if (isContentEqual(temp, text)) { //对比翻译前后
             return;
         }
-        Text existingText = (Text) chatArea.getChildren().get(lineIndex);
-        existingText.setFill(Color.GRAY);
 
+        Text text1 = new Text(text);
+        text1.setFill(Color.GRAY);
+        Platform.runLater(() -> messageBox.getChildren().add(text1));
+    /*
         existingText.setText(existingText.getText().replace("\n", ""));
-        existingText.setText(existingText.getText() + "   " + text + '\n');
+        existingText.setText(existingText.getText() + "   " + text + '\n'); //直接拼接的*/
         translatedTexts.put(lineIndex, text);
-        chatScrollPane.setVvalue(1.0);
     }
 
     //去掉空格
@@ -199,11 +222,11 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
     }
 
     public String getTextFromLine(int lineIndex) {
-        if (lineIndex < 0 || lineIndex >= chatArea.getChildren().size()) {
+        if (lineIndex < 0 || lineIndex >= messageWrapper.getChildren().size()) {
             LOGGER.warn("Invalid line index: {}", lineIndex);
             return "Error: Invalid line index.";
         }
-        Text textNode = (Text) chatArea.getChildren().get(lineIndex);
+        Text textNode = (Text) ((HBox) messageWrapper.getChildren().get(lineIndex)).getChildren().getFirst();
         String node = textNode.getText();
         if (node.contains(": ")) {
             String[] str = node.split(": ", 2);

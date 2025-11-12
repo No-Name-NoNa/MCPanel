@@ -5,6 +5,10 @@ import lombok.Setter;
 import moe.mcg.mcpanel.api.MinecraftSkin2D;
 import moe.mcg.mcpanel.image.ApplicationImage;
 
+
+/**
+ * 详细的玩家数据
+ */
 @Getter
 @Setter
 public class DetailedPlayer {
@@ -32,7 +36,7 @@ public class DetailedPlayer {
         this.permission = permission;
     }
 
-    public DetailedPlayer(String username, String uuid, MinecraftSkin2D icon) {
+    public DetailedPlayer() {
         this.username = "";
         this.uuid = "";
         this.icon = new MinecraftSkin2D(ApplicationImage.INSTANCE.getResource("steve.png"));

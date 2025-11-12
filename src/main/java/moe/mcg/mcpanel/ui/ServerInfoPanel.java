@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox;
 import moe.mcg.mcpanel.api.IPanel;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.i18n.TranslationManager;
 import moe.mcg.mcpanel.api.pack.ServerInfo;
 
 public class ServerInfoPanel extends VBox implements IPanel<ServerInfo>, ITranslatable {
@@ -30,7 +30,7 @@ public class ServerInfoPanel extends VBox implements IPanel<ServerInfo>, ITransl
     private ServerInfo serverInfo;
 
     public ServerInfoPanel() {
-        TranslateManager.register(this);
+        TranslationManager.register(this);
         getChildren().add(serverInfoBox);
     }
 

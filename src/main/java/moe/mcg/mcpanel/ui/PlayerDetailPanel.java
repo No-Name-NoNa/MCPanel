@@ -10,7 +10,7 @@ import moe.mcg.mcpanel.api.IPanel;
 import moe.mcg.mcpanel.api.MinecraftSkin2D;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.i18n.TranslationManager;
 import moe.mcg.mcpanel.api.minecraft.DetailedPlayer;
 import moe.mcg.mcpanel.api.minecraft.ServerPlayer;
 import moe.mcg.mcpanel.api.minecraft.SimpleVec3;
@@ -41,7 +41,7 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
     private ServerPlayer serverPlayer;
 
     public PlayerDetailPanel(PlayerListPanel playerListPanel, DetailedPlayer data) {
-        TranslateManager.register(this);
+        TranslationManager.register(this);
         setSpacing(10);
         this.playerListPanel = playerListPanel;
         setPadding(new Insets(15));
@@ -97,7 +97,7 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
 
     private String formatLocation(SimpleVec3 location) {
         if (location != null) {
-            return "(" + location.x + ", " + location.y + ", " + location.z + ")";
+            return "(" + location.x() + ", " + location.y() + ", " + location.z() + ")";
         }
         return "Unknown";
     }

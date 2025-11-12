@@ -3,12 +3,25 @@ package moe.mcg.mcpanel.api;
 import javafx.scene.Group;
 import javafx.scene.image.*;
 
+/**
+ * Minecraft 头像正面渲染类。
+ * <p>
+ * 该类用于显示 Minecraft 角色的头像正面，包括头部和帽子（如果有）部分的渲染。
+ * </p>
+ *
+ * <p>
+ * 该类继承自 {@link javafx.scene.Group}，并将渲染的头像和帽子图像作为 {@link javafx.scene.image.ImageView} 加入到场景图中。
+ * </p>
+ */
 public class MinecraftSkin2D extends Group {
     public static final FaceUV HEAD_FRONT = new FaceUV("HEAD_FRONT", 8, 8, 8, 8);
     public static final FaceUV HAT_FRONT = new FaceUV("HAT_FRONT", 40, 8, 8, 8);
     private static final float SCALE = 5.0f;
     private static final float OVERLAY_SCALE = SCALE * 9.0f / 8.0f;
 
+    /**
+     * 创建头像
+     */
     public MinecraftSkin2D(Image skin) {
 
         ImageView headFront = createFace(skin, HEAD_FRONT, SCALE);

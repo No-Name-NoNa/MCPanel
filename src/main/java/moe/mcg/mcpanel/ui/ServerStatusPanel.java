@@ -10,7 +10,7 @@ import lombok.Getter;
 import moe.mcg.mcpanel.api.IPanel;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.i18n.TranslationManager;
 import moe.mcg.mcpanel.api.minecraft.ServerStatus;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class ServerStatusPanel extends VBox implements IPanel<List<ServerStatus>
     private float averageTick = 20.0f;
 
     public ServerStatusPanel() {
-        TranslateManager.register(this);
+        TranslationManager.register(this);
 
         xAxis.setLabel(X_AXIS.getString());
         yAxis.setLabel(Y_AXIS.getString());

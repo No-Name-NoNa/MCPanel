@@ -25,6 +25,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 
+
+/**
+ * 初始化
+ */
 public class Main extends Application implements ITranslatable {
 
     public static final String APP_ID = "mcpanel";
@@ -45,6 +49,9 @@ public class Main extends Application implements ITranslatable {
         launch(args);
     }
 
+    /**
+     * 自适应大小
+     */
     public static void setScreenSize(Stage stage) {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         double screenWidth = screenBounds.getWidth() * WIDTH_SCALE;
@@ -112,6 +119,9 @@ public class Main extends Application implements ITranslatable {
         }
     }
 
+    /**
+     * 检测语言
+     */
     private Language checkAndCreateLanguageFile() {
         File languageFile = new File(LANGUAGE_FILE_PATH);
         if (!languageFile.exists()) {

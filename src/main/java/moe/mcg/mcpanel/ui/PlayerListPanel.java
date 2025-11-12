@@ -15,7 +15,7 @@ import moe.mcg.mcpanel.api.MinecraftSkin2D;
 import moe.mcg.mcpanel.api.Status;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.i18n.TranslationManager;
 import moe.mcg.mcpanel.api.minecraft.DetailedPlayer;
 import moe.mcg.mcpanel.api.minecraft.ServerPlayer;
 import moe.mcg.mcpanel.api.minecraft.SimpleServerPlayer;
@@ -53,7 +53,7 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
     private ServerPlayer player;
     @Getter
     @Setter
-    private DetailedPlayer detailedPlayer = new DetailedPlayer("dev", "123", new MinecraftSkin2D(ApplicationImage.INSTANCE.getResource("tenshi.png")));
+    private DetailedPlayer detailedPlayer = new DetailedPlayer();
     @Getter
     @Setter
     private PlayerDetailPanel playerDetailPanel;
@@ -64,10 +64,10 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
         this.socket = socket;
         this.in = in;
         this.out = out;
-        playerDetailPanel = new PlayerDetailPanel(this, new DetailedPlayer("", "", new MinecraftSkin2D(ApplicationImage.INSTANCE.getResource("steve.png"))));
+        playerDetailPanel = new PlayerDetailPanel(this, new DetailedPlayer());
         getStyleClass().add("player-list-panel");
         getChildren().setAll(playerContainer);
-        TranslateManager.register(this);
+        TranslationManager.register(this);
     }
 
 

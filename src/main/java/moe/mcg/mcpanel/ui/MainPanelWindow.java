@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import moe.mcg.mcpanel.api.Status;
 import moe.mcg.mcpanel.api.i18n.Component;
 import moe.mcg.mcpanel.api.i18n.ITranslatable;
-import moe.mcg.mcpanel.api.i18n.TranslateManager;
+import moe.mcg.mcpanel.api.i18n.TranslationManager;
 import moe.mcg.mcpanel.api.minecraft.ServerPlayer;
 import moe.mcg.mcpanel.api.minecraft.ServerStatus;
 import moe.mcg.mcpanel.api.pack.ModInfo;
@@ -87,7 +87,7 @@ public class MainPanelWindow implements ITranslatable {
         playerListPanel = new PlayerListPanel(socket, in, out);
         serverChatPanel = new ServerChatPanel(socket, in, out);
         LOGGER.info("Initializing MainPanelWindow");
-        TranslateManager.register(this);
+        TranslationManager.register(this);
         initUI(config);
     }
 
@@ -131,6 +131,8 @@ public class MainPanelWindow implements ITranslatable {
         rightScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         rightScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         rightScrollPane.setFitToHeight(true);
+
+        //撑开容器
         VBox.setVgrow(serverInfoPanel, Priority.ALWAYS);
         VBox.setVgrow(serverChatPanel, Priority.ALWAYS);
         VBox.setVgrow(serverStatusPanel, Priority.ALWAYS);
@@ -140,6 +142,8 @@ public class MainPanelWindow implements ITranslatable {
         titleLabel = new Label();
         titleLabel.getStyleClass().add("player-title");
 
+
+        //各种按钮
         btnServerInfo.setOnAction(e -> {
             setActiveButton(btnServerInfo);
             try {
