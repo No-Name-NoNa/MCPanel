@@ -84,7 +84,7 @@ public class Main extends Application implements ITranslatable {
         I18n.setLanguage(checkAndCreateLanguageFile());
 
         Group group = new Group();
-        scene = new Scene(group, 1000, 800, true);
+        scene = new Scene(group);
 
         setScreenSize(stage);
         scene.setFill(ApplicationColor.BACKGROUND);
