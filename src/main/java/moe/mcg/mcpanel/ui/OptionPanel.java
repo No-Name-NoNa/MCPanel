@@ -2,10 +2,8 @@ package moe.mcg.mcpanel.ui;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 import moe.mcg.mcpanel.Main;
@@ -24,6 +22,8 @@ public class OptionPanel extends VBox implements ITranslatable {
     private static final Component SAVE = Component.translatable("main.option.save");
     private static final Component API_KEY_LABEL = Component.translatable("main.option.apikey");
     private static final Component APP_ID_LABEL = Component.translatable("main.option.appid");
+    private static final Component ENABLED_LABEL = Component.translatable("main.option.enabled");
+    private static final Component DISABLED_LABEL = Component.translatable("main.option.disabled");
 
     private static final String FILE_NAME = "apikey.json";
     private static final String[] language = new String[]{
@@ -34,6 +34,8 @@ public class OptionPanel extends VBox implements ITranslatable {
     private static String KEY;
     @Getter
     private static String ID;
+    @Getter
+    private static boolean ENABLED;
     private final ComboBox<String> languageComboBox;
     private final Label languageLabel;
     private final Button applyButton;
@@ -42,6 +44,8 @@ public class OptionPanel extends VBox implements ITranslatable {
     private final Button saveButton;
     private final Label apiKeyLabel;
     private final Label appIdLabel;
+    private final ToggleButton enabledToggleButton;
+    private final Label enabledLabel;
 
     public OptionPanel() {
         TranslateManager.register(this);
@@ -72,14 +76,24 @@ public class OptionPanel extends VBox implements ITranslatable {
         saveButton.setOnAction(e -> saveSettings());
         saveButton.getStyleClass().add("save-button");
 
-        VBox languageBox = new VBox(10, languageLabel, languageComboBox);
+        enabledLabel = new Label(ENABLED_LABEL.getString());
+        enabledToggleButton = new ToggleButton();
+        enabledToggleButton.getStyleClass().add("save-button");
+        enabledToggleButton.setOnAction(e -> toggleEnabled());
+
+        HBox language = new HBox(10, languageComboBox, applyButton);
+
+        VBox languageBox = new VBox(10, languageLabel, language);
         languageBox.getStyleClass().add("language-box");
 
         VBox apiSettingsBox = new VBox(10, apiKeyLabel, apiKeyField, appIdLabel, appIdField);
         apiSettingsBox.getStyleClass().add("api-settings-box");
+        HBox enableBox = new HBox(10, saveButton, enabledToggleButton);
 
-        getChildren().addAll(languageBox, applyButton, apiSettingsBox, saveButton);
+        getChildren().addAll(languageBox, apiSettingsBox, enableBox);
         loadSettings();
+        enabledToggleButton.setSelected(ENABLED);
+        enabledToggleButton.setText(ENABLED ? ENABLED_LABEL.getString() : DISABLED_LABEL.getString());
     }
 
     private void setDefaultLanguage() {
@@ -108,6 +122,7 @@ public class OptionPanel extends VBox implements ITranslatable {
     private void saveSettings() {
         String apiKey = apiKeyField.getText();
         String appId = appIdField.getText();
+        boolean enabled = ENABLED;
 
         if (apiKey.isEmpty() || appId.isEmpty()) {
             LOGGER.info("API Key or App ID is empty");
@@ -115,17 +130,24 @@ public class OptionPanel extends VBox implements ITranslatable {
         }
 
         Gson gson = new Gson();
-        ApiSettings settings = new ApiSettings(apiKey, appId);
+        ApiSettings settings = new ApiSettings(apiKey, appId, enabled);
         String json = gson.toJson(settings);
 
         try (FileWriter file = new FileWriter(FILE_NAME)) {
             file.write(json);
             KEY = apiKey;
             ID = appId;
+            ENABLED = enabled;
             LOGGER.info("Settings saved");
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
+    }
+
+    private void toggleEnabled() {
+        ENABLED = enabledToggleButton.isSelected();
+        enabledToggleButton.setText(ENABLED ? ENABLED_LABEL.getString() : DISABLED_LABEL.getString());
+        saveSettings();
     }
 
     private void loadSettings() {
@@ -139,6 +161,7 @@ public class OptionPanel extends VBox implements ITranslatable {
                 appIdField.setText(settings.appId);
                 KEY = settings.apiKey;
                 ID = settings.appId;
+                ENABLED = settings.enabled;
                 LOGGER.info("Settings loaded successfully");
             }
         } catch (IOException | JsonSyntaxException e) {
@@ -154,8 +177,10 @@ public class OptionPanel extends VBox implements ITranslatable {
         languageLabel.setText(LANGUAGE.getString());
         apiKeyLabel.setText(API_KEY_LABEL.getString());
         appIdLabel.setText(APP_ID_LABEL.getString());
+        enabledToggleButton.setText(ENABLED ? ENABLED_LABEL.getString() : DISABLED_LABEL.getString());
+        enabledLabel.setText(ENABLED ? ENABLED_LABEL.getString() : DISABLED_LABEL.getString());
     }
 
-    private record ApiSettings(String apiKey, String appId) {
+    private record ApiSettings(String apiKey, String appId, boolean enabled) {
     }
 }

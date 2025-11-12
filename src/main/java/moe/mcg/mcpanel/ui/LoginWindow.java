@@ -63,6 +63,7 @@ public class LoginWindow implements ITranslatable {
     private PasswordField keyField;
     private Button loginButton;
     private boolean cancelConnection = false;
+
     public LoginWindow(Stage stage) {
         this.stage = stage;
         LOGGER.info("Initializing LoginWindow");

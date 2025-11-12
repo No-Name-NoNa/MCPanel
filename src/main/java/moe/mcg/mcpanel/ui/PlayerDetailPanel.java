@@ -58,19 +58,15 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
         backButton.getStyleClass().add("back-button");
         backButton.setOnAction(event -> back());
 
-        // Create Block 1: Player's Avatar and Basic Information
         VBox playerInfoBox = new VBox(10, skin2D, usernameLabel, uuidLabel, pingLabel);
-        playerInfoBox.getStyleClass().add("player-info-box");  // Apply CSS class for styling
+        playerInfoBox.getStyleClass().add("player-info-box");
 
-        // Create Block 2: Health, Hunger, Location, Dimension
         VBox statsBox = new VBox(10, healthLabel, hungryLabel, locationLabel, dimensionLabel);
-        statsBox.getStyleClass().add("stats-box");  // Apply CSS class for styling
+        statsBox.getStyleClass().add("stats-box");
 
-        // Back button container at the bottom
         HBox buttonBox = new HBox(10, backButton);
-        buttonBox.getStyleClass().add("button-box");  // Apply CSS class for styling
+        buttonBox.getStyleClass().add("button-box");
 
-        // Combine all elements into the layout
         getChildren().addAll(playerInfoBox, statsBox, buttonBox);
 
         refresh(new ServerPlayer(data.getUsername(), data.getUuid(), data.getLocation(), data.getDimension(),
@@ -87,7 +83,6 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
             trans(data);
         }
 
-        // Create Blocks for layout again after refreshing
         VBox playerInfoBox = new VBox(10, skin2D, usernameLabel, uuidLabel, permissionLabel, pingLabel);
         playerInfoBox.getStyleClass().add("player-info-box");
 
@@ -97,7 +92,6 @@ public class PlayerDetailPanel extends VBox implements IPanel<ServerPlayer>, ITr
         HBox buttonBox = new HBox(10, backButton);
         buttonBox.getStyleClass().add("button-box");
 
-        // Combine all elements back into the layout
         getChildren().addAll(playerInfoBox, statsBox, buttonBox);
     }
 

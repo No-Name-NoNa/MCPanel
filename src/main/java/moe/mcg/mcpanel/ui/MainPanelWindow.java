@@ -305,7 +305,7 @@ public class MainPanelWindow implements ITranslatable {
                 }
 
                 default:
-                    System.out.println("Unknown message type: " + messageType);
+                    LOGGER.warn("Unknown message type : {}", messageType);
             }
         } catch (Exception ignored) {
         }

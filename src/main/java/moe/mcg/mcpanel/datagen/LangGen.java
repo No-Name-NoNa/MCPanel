@@ -109,6 +109,8 @@ public class LangGen {
         addTranslation("main.option.apikey", "Baidu API KEY", "百度API KEY");
         addTranslation("main.option.appid", "Baidu APP ID", "百度APP ID");
         addTranslation("main.option.save", "Save", "保存");
+        addTranslation("main.option.enabled", "Enabled Translation", "已启用翻译");
+        addTranslation("main.option.disabled", "Disabled Translation", "已停用翻译");
 
         generate(new File("src/main/resources/assets/mcpanel/lang"));
     }

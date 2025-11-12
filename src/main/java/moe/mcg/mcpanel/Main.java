@@ -27,7 +27,6 @@ import java.util.Optional;
 
 public class Main extends Application implements ITranslatable {
 
-    private final Gson gson = new Gson();
     public static final String APP_ID = "mcpanel";
     public static final Component APP_NAME = Component.translatable("app.name");
     public static final float WIDTH_SCALE = 0.6f;
@@ -36,6 +35,7 @@ public class Main extends Application implements ITranslatable {
     private static final Component ALERT = Component.translatable("app.alert");
     private static final Component ALERT_CONTENT = Component.translatable("app.alert.content");
     private static final String LANGUAGE_FILE_PATH = "language.json";
+    private final Gson gson = new Gson();
     private Alert alert;
     private Scene scene;
     private Stage stage;
@@ -55,6 +55,18 @@ public class Main extends Application implements ITranslatable {
 
     public static void log(String log) {
         System.out.println("[MCPanel] " + log);
+    }
+
+    public static void updateLanguageInFile(Language language) {
+        File languageFile = new File(LANGUAGE_FILE_PATH);
+        try (FileWriter writer = new FileWriter(languageFile)) {
+            String json = new Gson().toJson(new LanguageConfig(language.name()));
+            writer.write(json);
+            LOGGER.info("Updated language.json with language: {}", language);
+
+        } catch (IOException e) {
+            LOGGER.error("Failed to update language.json", e);
+        }
     }
 
     @Override
@@ -125,20 +137,6 @@ public class Main extends Application implements ITranslatable {
 
         return Language.ZH_CN;
     }
-
-    public static void updateLanguageInFile(Language language) {
-        File languageFile = new File(LANGUAGE_FILE_PATH);
-        try (FileWriter writer = new FileWriter(languageFile)) {
-            String json = new Gson().toJson(new LanguageConfig(language.name()));
-            writer.write(json);
-            LOGGER.info("Updated language.json with language: {}", language);
-
-        } catch (IOException e) {
-            LOGGER.error("Failed to update language.json", e);
-        }
-    }
-
-
 
     @Override
     public void translate() {

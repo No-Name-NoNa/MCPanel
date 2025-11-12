@@ -39,9 +39,9 @@ import static moe.mcg.mcpanel.ui.MainPanelWindow.status;
 
 public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerList>, ITranslatable {
     private static final Component NO_PLAYER = Component.translatable("main.player.no_player");
-
     private static final String MOJANG_API_URL = "https://api.mojang.com/users/profiles/minecraft/";
     private static final String SESSION_API_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
+    private static final int TIME_OUT = 10 * 1000;
 
     private final Map<String, MinecraftSkin2D> cachedMinecraftSkin2D = new HashMap<>();
     private final Socket socket;
@@ -76,7 +76,6 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
         this.playerList = data.getPlayerList();
         playerContainer.getChildren().clear();
 
-        // No players case
         if (playerList == null || playerList.isEmpty()) {
             Label noPlayerLabel = new Label(NO_PLAYER.getString());
             noPlayerLabel.getStyleClass().add("no-player-label");
@@ -84,18 +83,11 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
             return;
         }
 
-        // Player rows (with index in front of player name)
         for (int i = 0; i < playerList.size(); i++) {
             SimpleServerPlayer p = playerList.get(i);
-
-            // Create a label with the player index and name combined
             Label playerLabel = new Label((i + 1) + ". " + p.name());
-
             playerLabel.getStyleClass().add("player-row");
-
-            // Handle row click
             playerLabel.setOnMouseClicked(event -> showPlayerDetails(p));
-
             playerContainer.getChildren().add(playerLabel);
         }
     }
@@ -113,6 +105,7 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
         getChildren().setAll(playerDetailPanel);
     }
 
+
     private void fetchPlayerDetails(String username) {
         Task<String> uuidTask = new Task<>() {
             @Override
@@ -124,7 +117,6 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
         uuidTask.setOnSucceeded(event -> {
             String uuid = uuidTask.getValue();
             if (uuid != null) {
-                // Step 2: Fetch skin and cape details
                 fetchSkinDetails(uuid, username);
             }
         });
@@ -133,11 +125,12 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
             Throwable ex = uuidTask.getException();
             LOGGER.error(ex.getMessage());
         });
-
-        // Start the task in the background
         new Thread(uuidTask).start();
     }
 
+    /**
+     * 通过用户名获取在线UUID
+     */
     private String getPlayerUUID(String username) {
         String urlString = MOJANG_API_URL + username;
         try {
@@ -145,14 +138,13 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(TIME_OUT);
+            connection.setReadTimeout(TIME_OUT);
 
-            // 获取响应代码
             int responseCode = connection.getResponseCode();
 
-            if (responseCode == HttpURLConnection.HTTP_OK) { // 如果请求成功
-                // 读取响应数据
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
@@ -160,13 +152,11 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
                     response.append(inputLine);
                 }
                 in.close();
-
-                // 解析 JSON 返回
                 Gson gson = new Gson();
                 JsonObject jsonObject = gson.fromJson(response.toString(), JsonObject.class);
-                return jsonObject.get("id").getAsString(); // 返回 UUID
+                return jsonObject.get("id").getAsString();
             } else {
-                System.out.println("GET request failed. Response Code: " + responseCode);
+                LOGGER.warn("GET request returned HTTP error code : {}", responseCode);
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
@@ -183,21 +173,17 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
 
                     LOGGER.info("STARTING SKIN DETAILS URL: {}", urlString);
 
-                    // 创建 URL 对象
                     URL url = URI.create(urlString).toURL();
 
-                    // 打开连接
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(5000); // 设置连接超时
-                    connection.setReadTimeout(5000);    // 设置读取超时
+                    connection.setConnectTimeout(TIME_OUT);
+                    connection.setReadTimeout(TIME_OUT);
 
-                    // 获取响应代码
                     int responseCode = connection.getResponseCode();
 
-                    if (responseCode == HttpURLConnection.HTTP_OK) { // 如果请求成功
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
 
-                        // 读取响应数据
                         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                         String inputLine;
                         StringBuilder response = new StringBuilder();
@@ -206,7 +192,6 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
                         }
                         in.close();
 
-                        // 解析 JSON 返回
                         Gson gson = new Gson();
                         JsonObject jsonObject = gson.fromJson(response.toString(), JsonObject.class);
 
@@ -217,11 +202,10 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
                             if (property.get("name").getAsString().equals("textures")) {
                                 String base64Value = property.get("value").getAsString();
 
-                                // 进行 Base64 解码
+                                // 必要的 Base64 解码
                                 String decodedValue = new String(java.util.Base64.getDecoder().decode(base64Value));
                                 JsonObject textures = gson.fromJson(decodedValue, JsonObject.class);
 
-                                // 提取皮肤的 URL
                                 JsonObject skin1 = textures.getAsJsonObject("textures");
                                 JsonObject skin = skin1.getAsJsonObject("SKIN");
                                 if (skin != null) {
@@ -229,14 +213,13 @@ public class PlayerListPanel extends VBox implements IPanel<SimpleServerPlayerLi
                                     LOGGER.info("skinUrl: {}", skinUrl);
                                     Platform.runLater(() -> displayPlayerSkin(skinUrl, username));
                                 } else {
-                                    // 如果没有 "SKIN" 属性，输出日志并处理缺失
-                                    System.out.println("No SKIN property found in textures.");
+                                    LOGGER.warn("SKIN NOT FOUND");
                                 }
                                 return null;
                             }
                         }
                     } else {
-                        System.out.println("GET request failed. Response Code: " + responseCode);
+                        LOGGER.warn("GET request failed. Response Code: {}", responseCode);
                     }
                 } catch (IOException e) {
                     LOGGER.error(e.getMessage());

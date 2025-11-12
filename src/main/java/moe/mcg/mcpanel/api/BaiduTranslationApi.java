@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static moe.mcg.mcpanel.Main.LOGGER;
+
 
 public class BaiduTranslationApi {
 
@@ -33,14 +35,14 @@ public class BaiduTranslationApi {
     }
 
     private static String handleResponse(HttpResponse<String> response) {
-        System.out.println("Response Status Code: " + response.statusCode());
+        LOGGER.info("Response Body: {}", response.body());
 
         HttpHeaders headers = response.headers();
         Map<String, List<String>> headerMap = headers.map();
-        System.out.println("Response Headers: " + headerMap);
+        LOGGER.info("Response Headers: {}", headerMap);
 
         String responseBody = response.body();
-        System.out.println("Response Body: " + responseBody);
+        LOGGER.info("Response Body: {}", responseBody);
 
         if (responseBody.contains("trans_result")) {
             return responseBody;

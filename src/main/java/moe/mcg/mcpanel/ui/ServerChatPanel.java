@@ -143,7 +143,9 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
             chatScrollPane.setVvalue(1.0);
         }
 
-        for (int i = 0; i < chatArea.getChildren().size(); i++) {
+        if (!OptionPanel.isENABLED()) return;
+
+        for (int i = chatArea.getChildren().size() - 1; i >= 0; i--) {
             if (translatedTexts.containsKey(i)) continue;
             String originalText = getTextFromLine(i);
             if (originalText != null && originalText.startsWith("/")) {
@@ -177,7 +179,7 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
         }
         String temp = getTextFromLine(lineIndex).replace("\n", "");
 
-        if (Objects.equals(temp, text)) {
+        if (isContentEqual(temp, text)) {
             return;
         }
         Text existingText = (Text) chatArea.getChildren().get(lineIndex);
@@ -187,6 +189,13 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
         existingText.setText(existingText.getText() + "   " + text + '\n');
         translatedTexts.put(lineIndex, text);
         chatScrollPane.setVvalue(1.0);
+    }
+
+    //去掉空格
+    private boolean isContentEqual(String str1, String str2) {
+        String cleanStr1 = str1.replaceAll("\\s+", "");
+        String cleanStr2 = str2.replaceAll("\\s+", "");
+        return cleanStr1.equals(cleanStr2);
     }
 
     public String getTextFromLine(int lineIndex) {
@@ -222,11 +231,13 @@ public class ServerChatPanel extends VBox implements IPanel<List<String>>, ITran
     }
 
     private String extractTranslatedText(String response) {
-        if (response.contains("trans_result")) {
-            int startIndex = response.indexOf("\"dst\":\"") + 7;
-            int endIndex = response.indexOf("\"", startIndex);
+        String cleanedResponse = response.replaceAll("\\\\\"", "\"");
+
+        if (cleanedResponse.contains("trans_result")) {
+            int startIndex = cleanedResponse.indexOf("\"dst\":\"") + 7;
+            int endIndex = cleanedResponse.indexOf("\"", startIndex);
             if (endIndex != -1) {
-                return response.substring(startIndex, endIndex);
+                return cleanedResponse.substring(startIndex, endIndex);
             }
         }
         return null;
